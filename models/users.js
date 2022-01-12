@@ -14,48 +14,39 @@ const collectionName = "users";
 /* CRUD Operation */
 module.exports = {
     // [POST] Authentication Check
-    Authentication: function (email, password, res) {
+    Authentication: function (email, password) {
+        let validation = { result: false, error, user };
         try {
             client.connect().then(client => {
                 const userCol = client.db(database).collection(collectionName);
                 userCol.findOne({email: email}, (error, result) => {
                     if (error) throw error;
-                    if (result == null) {
-                        client.close();
-                        return res.status(404).send({
-                            code: 0,
-                            message: `${email} doesn't exists, try signUp with your valid email`
+                    if (result) {
+                        bcrypt.compare(password, result.password, (err, same) =>{
+                            if (err) throw err;
+                            client.close();
+                            if (!same) {
+                                validation.result = false;
+                                validation.error = null;
+                                validation.user = null;
+                            }
+                            validation.result = true;
+                            validation.error = null;
+                            validation.user = result;
                         });
                     }
-                    bcrypt.compare(password, result.password, (err, same) =>{
-                        if (err) throw err;
-                        if (same == true) {
-                            client.close();
-                            return res.status(200).send({
-                                code: 1,
-                                message: "Authentication success"
-                            });
-                        }
-                        if (same == false) {
-                            client.close();
-                            return res.status(406).send({
-                                code: 0,
-                                message: "Your password is wrong"
-                            });
-                        }
-                    });
                 });
             });
         } catch (error) {
             client.close();
-            return res.status(500).send({
-                code: -1,
-                message: `Internal Server Error: ${error}`
-            });
+            validation.result = false;
+            validation.error = error;
+            validation.user = null;
         }
+        return validation;
     },
 
-    // [GET] ReadList (Searching) ~ Need more refision (ops filtering, pagination)
+    // [GET] ReadList (Searching) ~ Need more refision (filter)
     ReadListUser: function (filterByFullName, filterByJob, page, pageLength, res) {
         try {
             client.connect().then(client => {
@@ -147,7 +138,7 @@ module.exports = {
                 }
                 // Create the document
                 const doc = {
-                    id_user: random.randomNumber(0, process.env.INT64_MAX),
+                    id_user: random.randomNumber(),
                     email: email,
                     username: username,
                     fullname: fullname,

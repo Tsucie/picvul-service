@@ -82,16 +82,14 @@ module.exports = {
                 const postCol = client.db(database).collection(collectionName);
                 // Create the document
                 const doc = {
-                    id_post: random.randomNumber(0, process.env.INT64_MAX),
-                    id_user: id_user,
+                    id_post: random.randomNumber(),
+                    id_user: Number(id_user),
                     categories: categories,
                     title: title,
                     desc: desc,
                     post_images: post_images,
                     like_by: [],
                     likes: 0,
-                    comments: [],
-                    comments_count: 0,
                     post_time: Date.now(),
                     edited_time: 0
                 };
@@ -148,12 +146,54 @@ module.exports = {
                         if (result.modifiedCount == 0) {
                             return res.status(500).send({
                                 code: 0,
-                                message: `Update Post data failed`
+                                message: `Update Post failed`
                             });
                         }
                         return res.status(200).send({
                             code: 1,
-                            message: `Post data has updated`
+                            message: `Post has updated`
+                        });
+                    });
+                });
+            });
+        } catch (error) {
+            client.close();
+            return res.status(500).send({
+                code: -1,
+                message: `Internal Server Error: ${error}`
+            });
+        }
+    },
+
+    // [PUT/PATCH] Plus Like
+    EditLikePost: function (id_post, like_by, res) {
+        try {
+            client.connect().then(client => {
+                const postCol = client.db(database).collection(collectionName);
+                postCol.findOne({id_post: id_post}, (error, result) => {
+                    if (error) throw error;
+                    if (result == null) {
+                        client.close();
+                        return res.status(400).send({
+                            code: 0,
+                            message: `Bad Request`
+                        });
+                    }
+                    postCol.updateOne({id_post: id_post}, {
+                        $push: {like_by: like_by},
+                        $set: {likes: result.likes+1}
+                    }, (error, result) => {
+                        if (error) throw error;
+                        client.close();
+                        if (result.modifiedCount == 0) {
+                            return res.status(500).send({
+                                code: 0,
+                                message: `Like failed`
+                            });
+                        }
+                        return res.status(200).send({
+                            code: 1,
+                            message: `Liked`
                         });
                     });
                 });
@@ -192,7 +232,7 @@ module.exports = {
             return res.status(500).send({
                 code: -1,
                 message: `Internal Server Error: ${error}`
-            })
+            });
         }
     }
 };

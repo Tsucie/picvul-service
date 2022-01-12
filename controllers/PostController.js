@@ -17,6 +17,10 @@ module.exports = {
         const { id_post, categories, title, desc, post_images } = req.body;
         posts.EditPost(id_post, categories, title, desc, post_images, res);
     },
+    PostLike: function (req, res) {
+        const { id_post, like_by } = req.body;
+        posts.EditLikePost(id_post, like_by, res);
+    },
     PostDelete: function (req, res) {
         const { id_post } = req.body;
         posts.DeletePost(id_post, res);
