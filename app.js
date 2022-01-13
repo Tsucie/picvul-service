@@ -1,8 +1,8 @@
 const Express = require("express");
 const BodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 dotenv.config();
-const jwt = require("jsonwebtoken");
 const app = Express();
 const auth = require("./controllers/AuthController");
 const user = require("./controllers/UserController");
@@ -10,6 +10,7 @@ const post = require("./controllers/PostController");
 const follow = require("./controllers/FollowController");
 const comment = require("./controllers/CommentController");
 
+app.use(cookieParser());
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({ extended: true }));
 

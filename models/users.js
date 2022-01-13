@@ -13,37 +13,31 @@ const collectionName = "users";
 
 /* CRUD Operation */
 module.exports = {
-    // [POST] Authentication Check
-    Authentication: function (email, password) {
-        let validation = { result: false, error, user };
+    // [POST] Authentication Check [Passed]
+    Authentication: function (email, password, func) {
         try {
+            var validation = { result: false, error: '', user: '' };
             client.connect().then(client => {
                 const userCol = client.db(database).collection(collectionName);
-                userCol.findOne({email: email}, (error, result) => {
-                    if (error) throw error;
-                    if (result) {
-                        bcrypt.compare(password, result.password, (err, same) =>{
-                            if (err) throw err;
+                userCol.findOne({email: email}).then(user => {
+                    if (user) {
+                        bcrypt.compare(password, user.password).then(same => {
                             client.close();
-                            if (!same) {
-                                validation.result = false;
-                                validation.error = null;
-                                validation.user = null;
+                            if (!same) func(validation);
+                            else {
+                                validation.result = true;
+                                validation.user = user;
+                                func(validation);
                             }
-                            validation.result = true;
-                            validation.error = null;
-                            validation.user = result;
-                        });
+                        }).catch(err => { throw err;});
                     }
-                });
+                }).catch(err => { throw err; });
             });
         } catch (error) {
             client.close();
-            validation.result = false;
             validation.error = error;
-            validation.user = null;
+            func(validation);
         }
-        return validation;
     },
 
     // [GET] ReadList (Searching) ~ Need more refision (filter)
@@ -72,6 +66,8 @@ module.exports = {
                     return res.status(200).send({
                         code: 1,
                         message: `ReadList Successfully`,
+                        page: page,
+                        length: pageLength,
                         data: result
                     });
                 });
@@ -115,47 +111,55 @@ module.exports = {
         }
     },
 
-    // [POST] Add (Used by userRegist)
+    // [POST] Add (Used by userRegist) [Passed]
     AddUser: function (email, username, fullname, password, job, profile_image, res) {
         try {
             client.connect().then(client => {
                 const userCol = client.db(database).collection(collectionName);
                 // email validation
-                if (userCol.find({email: email}).count > 0) {
-                    client.close();
-                    return res.status(406).send({
-                        code: 0,
-                        message: `${email} is already exists, try login with your registered email`
-                    });
-                }
-                // username validation
-                if (userCol.find({username: username}).count > 0) {
-                    client.close();
-                    return res.status(406).send({
-                        code: 0,
-                        message: `${username} has taken, try ${username + random.randomNumber(1000, 9999)}`
-                    });
-                }
-                // Create the document
-                const doc = {
-                    id_user: random.randomNumber(),
-                    email: email,
-                    username: username,
-                    fullname: fullname,
-                    password: bcrypt.hashSync(password, saltRounds),
-                    job: job,
-                    profile_image: profile_image,
-                    followings: 0,
-                    followers: 0
-                };
-                userCol.insertOne(doc).then(result => {
-                    client.close();
-                    return res.status(200).send({
-                        code: 1,
-                        message: "Account successfully created"
-                    });
-                })
-                .catch(error => { throw error });
+                userCol.countDocuments({email: email}).then(value => {
+                    if (value > 0) {
+                        client.close();
+                        return res.status(406).send({
+                            code: 0,
+                            message: `${email} is already exists, try login with your registered email`
+                        });
+                    }
+                    else {
+                        // username validation
+                        userCol.countDocuments({username: username}).then(value => {
+                            if (value > 0) {
+                                client.close();
+                                return res.status(406).send({
+                                    code: 0,
+                                    message: `${username} has taken, try ${username + random.randomNumber(1000, 9999)}`
+                                });
+                            }
+                            else {
+                                // Create the document
+                                const doc = {
+                                    id_user: random.randomNumber(),
+                                    email: email,
+                                    username: username,
+                                    fullname: fullname,
+                                    password: bcrypt.hashSync(password, saltRounds),
+                                    job: job,
+                                    profile_image: profile_image,
+                                    followings: 0,
+                                    followers: 0
+                                };
+                                userCol.insertOne(doc).then(result => {
+                                    client.close();
+                                    return res.status(200).send({
+                                        code: 1,
+                                        message: "Account successfully created"
+                                    });
+                                })
+                                .catch(error => { throw error });
+                            }
+                        });
+                    }
+                });
             });
         } catch (error) {
             client.close();

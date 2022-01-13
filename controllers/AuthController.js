@@ -4,24 +4,29 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 module.exports = {
+    // [Passed]
     Login: function (req, res) {
-        const { email, password } = req.body;
         try {
-            let validation = Authentication(email, password);
-            if (!validation.result) {
-                if (validation.error) throw validation.error;
-                return res.status(401).send({code: 1, message: "Email or Password is wrong"});
-            }
-            // Create and assign token
-            let payload = { id: validation.user.id_user, name: validation.user.fullname};
-            const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
-
-            return res.cookie("access_token", token, {
-                httpOnly: true,
-                secure: process.env.APP_ENV === "production"
-            }).status(200).send({
-                code: 1,
-                message: "Login Successfully 😏 🍀"
+            const { email, password } = req.body;
+            Authentication(email, password, (validation) => {
+                if (!validation.result) {
+                    if (validation.error) throw validation.error;
+                    else return res.status(401).send({code: 0, message: "Email or Password is wrong"});
+                }
+                else {
+                    // Create and assign token
+                    let payload = { id: validation.user.id_user, name: validation.user.fullname};
+                    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
+                    return res.cookie("access_token", token, {
+                        httpOnly: true,
+                        secure: process.env.APP_ENV === "production"
+                    }).status(200).send({
+                        code: 1,
+                        message: "Login Successfully 😏 🍀",
+                        access_token: token,
+                        user: validation.user
+                    });
+                }
             });
         } catch (error) {
             return res.status(500).send({
@@ -41,6 +46,7 @@ module.exports = {
             return res.sendStatus(403);
         }
     },
+    // [Passed]
     UserRegist: function (req, res) {
         const { email, username, fullname, password, job, profile_image } = req.body;
         AddUser(email, username, fullname, password, job, profile_image, res);

@@ -5,6 +5,7 @@ BackEnd Service for picvul app
 - Node.js (v16.13.1^)
 - Express (v4.17.2^)
 - express-basic-auth (v1.2.1^)
+- cookie-parser (v1.4.6^)
 - jsonwebtoken (v8.5.1^)
 - mongodb (v4.3.0^)
 - body-parser (v1.19.1^)
@@ -17,7 +18,7 @@ BackEnd Service for picvul app
 
 ## Installation
 - `npm init`
-- `npm i express express-basic-auth jsonwebtoken mongodb body-parser dotenv bcrypt`
+- `npm i express express-basic-auth cookie-parser jsonwebtoken mongodb body-parser dotenv bcrypt`
 - `npm i --save-dev nodemon`
 - Change `.env.example` file name to `.env`
 
