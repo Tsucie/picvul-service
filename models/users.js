@@ -1,79 +1,88 @@
-const { MongoClient } = require("mongodb");
-const dotenv = require("dotenv");
-dotenv.config();
 const bcrypt = require("bcrypt");
+const dotenv = require("dotenv");
+const { ObjectId } = require("mongodb");
+const _conn = require("../General/dbContext");
 const random = require("../General/randomNumber");
+const check = require("../General/check");
+dotenv.config();
 const saltRounds = 10;
 
-/* MongoData */
-const connStr = process.env.MONGO_DB_ATLAS;
-const client = new MongoClient(connStr, { useNewUrlParser: true, useUnifiedTopology: true });
-const database = process.env.MONGO_DB_DATABASE;
+/* Mongo collection */
 const collectionName = "users";
 
 /* CRUD Operation */
 module.exports = {
-    // [POST] Authentication Check [Passed]
+    // [POST] Authentication Check
     Authentication: function (email, password, func) {
+        if (check.isNull(email) || check.isNull(password))
+            return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
             var validation = { result: false, error: '', user: '' };
-            client.connect().then(client => {
-                const userCol = client.db(database).collection(collectionName);
-                userCol.findOne({email: email}).then(user => {
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                const users = db.collection(collectionName);
+                users.findOne({email: email}, (error, user) => {
+                    if (error) throw error;
                     if (user) {
-                        bcrypt.compare(password, user.password).then(same => {
-                            client.close();
+                        bcrypt.compare(password, user.password, (err, same) => {
+                            if (err) throw err;
                             if (!same) func(validation);
                             else {
                                 validation.result = true;
                                 validation.user = user;
                                 func(validation);
                             }
-                        }).catch(err => { throw err;});
+                        });
                     }
-                }).catch(err => { throw err; });
+                    else func(validation);
+                });
             });
         } catch (error) {
-            client.close();
             validation.error = error;
             func(validation);
         }
     },
 
     // [GET] ReadList (Searching) ~ Need more refision (filter)
-    ReadListUser: function (filterByFullName, filterByJob, page, pageLength, res) {
+    ReadListUser: function (filterByJob, page, pageLength, res) {
+        if (check.isNull(page) || check.isNull(pageLength))
+            return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
-            client.connect().then(client => {
-                const userCol = client.db(database).collection(collectionName);
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                const users = db.collection(collectionName);
                 // filtering
-                // let fullname, job;
-                // if (filterByFullName !== undefined || filterByFullName !== "")
-                //     fullname = filterByFullName;
-                // if (filterByJob !== undefined || filterByJob !== "")
-                //     job = filterByJob;
+                let filter = {};
+                if (!check.isNull(filterByJob))
+                    filter = {job: filterByJob};
                 
                 //pagination
                 let skip = (page - 1) * pageLength;
-                userCol.find({}, {limit: pageLength, skip: skip}).toArray((error, result) => {
+                users.aggregate([
+                    {$match: filter},
+                    {$sort: {fullname: 1}},
+                    {$limit: pageLength},
+                    {$skip: skip}
+                ]).toArray((error, result) => {
                     if (error) throw error;
-                    client.close();
                     if (result == null) {
                         return res.status(404).send({
                             code: 0,
                             message: `Not Found`
                         });
                     }
-                    return res.status(200).send({
-                        code: 1,
-                        message: `ReadList Successfully`,
-                        page: page,
-                        length: pageLength,
-                        data: result
-                    });
+                    else {
+                        return res.status(200).send({
+                            code: 1,
+                            message: `ReadList Successfully`,
+                            page: page,
+                            length: pageLength,
+                            data: result
+                        });
+                    }
                 });
             });
         } catch (error) {
-            client.close();
             return res.status(500).send({
                 code: -1,
                 message: `Internal Server Error: ${error}`
@@ -83,12 +92,14 @@ module.exports = {
 
     // [GET] ReadByID (Detail)
     ReadByIDUser: function (id_user, res) {
+        if (!ObjectId.isValid(id_user))
+            return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
-            client.connect().then(client => {
-                const userCol = client.db(database).collection(collectionName);
-                userCol.findOne({id_user: id_user}, (error, result) => {
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                const users = db.collection(collectionName);
+                users.findOne({_id: ObjectId(id_user)}, (error, result) => {
                     if (error) throw error;
-                    client.close();
                     if (result == null) {
                         return res.status(404).send({
                             code: 0,
@@ -103,7 +114,6 @@ module.exports = {
                 });
             });
         } catch (error) {
-            client.close();
             return res.status(500).send({
                 code: -1,
                 message: `Internal Server Error: ${error}`
@@ -111,15 +121,18 @@ module.exports = {
         }
     },
 
-    // [POST] Add (Used by userRegist) [Passed]
+    // [POST] Add (Used by userRegist)
     AddUser: function (email, username, fullname, password, job, profile_image, res) {
+        if (check.isNull(email) || check.isNull(username) || check.isNull(fullname) || check.isNull(password) || check.isNull(job) || check.isNull(profile_image))
+            return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
-            client.connect().then(client => {
-                const userCol = client.db(database).collection(collectionName);
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
                 // email validation
-                userCol.countDocuments({email: email}).then(value => {
+                const users = db.collection(collectionName);
+                users.countDocuments({email: email}, (error, value) => {
+                    if (error) throw error;
                     if (value > 0) {
-                        client.close();
                         return res.status(406).send({
                             code: 0,
                             message: `${email} is already exists, try login with your registered email`
@@ -127,9 +140,9 @@ module.exports = {
                     }
                     else {
                         // username validation
-                        userCol.countDocuments({username: username}).then(value => {
-                            if (value > 0) {
-                                client.close();
+                        users.countDocuments({username: username}, (err, val) => {
+                            if (err) throw err;
+                            if (val > 0) {
                                 return res.status(406).send({
                                     code: 0,
                                     message: `${username} has taken, try ${username + random.randomNumber(1000, 9999)}`
@@ -138,7 +151,6 @@ module.exports = {
                             else {
                                 // Create the document
                                 const doc = {
-                                    id_user: random.randomNumber(),
                                     email: email,
                                     username: username,
                                     fullname: fullname,
@@ -146,23 +158,25 @@ module.exports = {
                                     job: job,
                                     profile_image: profile_image,
                                     followings: 0,
-                                    followers: 0
+                                    followers: 0,
+                                    mylikes: []
                                 };
-                                userCol.insertOne(doc).then(result => {
-                                    client.close();
-                                    return res.status(200).send({
-                                        code: 1,
-                                        message: "Account successfully created"
-                                    });
-                                })
-                                .catch(error => { throw error });
+                                users.insertOne(doc, (ero, result) => {
+                                    if (ero) throw ero;
+                                    if (result.insertedId) {
+                                        return res.status(200).send({
+                                            code: 1,
+                                            message: "Account successfully created",
+                                            id_user: result.insertedId
+                                        });
+                                    }
+                                });
                             }
                         });
                     }
                 });
             });
         } catch (error) {
-            client.close();
             return res.status(500).send({
                 code: -1,
                 message: `Internal Server Error: ${error}`
@@ -172,38 +186,35 @@ module.exports = {
 
     // [PUT/PATCH] Edit
     EditUser: function (id_user, email, username, fullname, job, profile_image, res) {
+        if (!ObjectId.isValid(id_user))
+            return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
-            client.connect().then(client => {
-                const userCol = client.db(database).collection(collectionName);
-                userCol.findOne({id_user: id_user}, (error, result) => {
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                const users = db.collection(collectionName);
+                users.findOne({_id: ObjectId(id_user)}, (error, result) => {
                     if (error) throw error;
                     if (result == null) {
-                        client.close();
                         return res.status(400).send({
                             code: 0,
                             message: `Bad Request`
                         });
                     }
-                    if (email === undefined || email === "")
-                        email = result.email;
-                    if (username === undefined || username === "")
-                        username = result.username;
-                    if (fullname === undefined || fullname === "")
-                        fullname = result.fullname;
-                    if (job === undefined || job === "")
-                        job = result.job;
-                    if (profile_image === undefined || profile_image === "")
-                        profile_image = result.profile_image;
+                    if (check.isNull(email)) email = result.email;
+                    if (check.isNull(username)) username = result.username;
+                    if (check.isNull(fullname)) fullname = result.fullname;
+                    if (check.isNull(job)) job = result.job;
+                    if (check.isNull(profile_image)) profile_image = result.profile_image;
                     
-                    userCol.updateOne({id_user: id_user}, {$set: {
+                    let doc = {
                         email: email,
                         username: username,
                         fullname: fullname,
                         job: job,
                         profile_image: profile_image
-                    }}, (error, result) => {
+                    };
+                    users.updateOne({_id: ObjectId(id_user)}, {$set: doc}, (error, result) => {
                         if (error) throw error;
-                        client.close();
                         if (result.modifiedCount == 0) {
                             return res.status(500).send({
                                 code: 0,
@@ -218,7 +229,6 @@ module.exports = {
                 });
             });
         } catch (error) {
-            client.close();
             return res.status(500).send({
                 code: -1,
                 message: `Internal Server Error: ${error}`
@@ -228,13 +238,15 @@ module.exports = {
 
     // [PUT/PATCH] EditPassword
     EditPassword: function (id_user, oldPassword, newPassword, res) {
+        if (!ObjectId.isValid(id_user))
+            return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
-            client.connect().then(client => {
-                const userCol = client.db(database).collection(collectionName);
-                userCol.findOne({id_user: id_user}, (error, result) => {
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                const users = db.collection(collectionName);
+                users.findOne({_id: ObjectId(id_user)}, (error, result) => {
                     if (error) throw error;
                     if (result == null) {
-                        client.close();
                         return res.status(400).send({
                             code: 0,
                             message: `Bad Request`
@@ -243,17 +255,15 @@ module.exports = {
                     bcrypt.compare(oldPassword, result.password, (err, same) => {
                         if (err) throw err;
                         if (same == false) {
-                            client.close();
                             return res.status(406).send({
                                 code: 0,
                                 message: `Old password doesn't match with user password`
                             });
                         }
-                        bcrypt.hash(newPassword, saltRounds, (err, encrypted) => {
-                            if (err) throw err;
-                            userCol.updateOne({id_user: id_user}, {$set: {password: encrypted}})
-                            .then(result => {
-                                client.close();
+                        bcrypt.hash(newPassword, saltRounds, (ero, encrypted) => {
+                            if (ero) throw ero;
+                            users.updateOne({_id: ObjectId(id_user)}, {$set: {password: encrypted}}, (errs, result) => {
+                                if (errs) throw errs;
                                 if (result.modifiedCount == 0) {
                                     return res.status(500).send({
                                         code: 0,
@@ -270,7 +280,6 @@ module.exports = {
                 });
             });
         } catch (error) {
-            client.close();
             return res.status(500).send({
                 code: -1,
                 message: `Internal Server Error: ${error}`
@@ -280,12 +289,14 @@ module.exports = {
 
     // [DELETE] Delete Permanently
     DeleteUser: function (id_user, res) {
+        if (!ObjectId.isValid(id_user))
+            return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
-            client.connect().then(client => {
-                const userCol = client.db(database).collection(collectionName);
-                userCol.deleteOne({id_user: id_user}, (error, result) => {
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                const users = db.collection(collectionName);
+                users.deleteOne({_id: ObjectId(id_user)}, (error, result) => {
                     if (error) throw error;
-                    client.close();
                     if (result.deletedCount == 0) {
                         return res.status(500).send({
                             code: 0,
@@ -299,7 +310,6 @@ module.exports = {
                 });
             });
         } catch (error) {
-            client.close();
             return res.status(500).send({
                 code: -1,
                 message: `Internal Server Error: ${error}`

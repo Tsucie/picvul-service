@@ -19,7 +19,7 @@ module.exports = {
     },
     CommentLike: function (req, res) {
         const { id_comment, like_by } = req.body;
-        comments.EditLikeComment(id_comment, like_by, req);
+        comments.EditLikeComment(id_comment, like_by, res);
     },
     CommentDelete: function (req, res) {
         const { id_comment } = req.body;

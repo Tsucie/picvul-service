@@ -2,8 +2,8 @@ const posts = require("../models/posts");
 
 module.exports = {
     PostGetList: function (req, res) {
-        const { page, pageLength, category } = req.body;
-        posts.ReadListPost(page, pageLength, category, res);
+        const { page, pageLength, filterByCategory, sortBy } = req.body;
+        posts.ReadListPost(page, pageLength, filterByCategory, sortBy, res);
     },
     PostGetByID: function (req, res) {
         const { id_post } = req.body;

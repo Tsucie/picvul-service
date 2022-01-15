@@ -9,6 +9,16 @@ module.exports = {
         const { following_id_user, page, pageLength } = req.body;
         follows.ReadListFollower(following_id_user, page, pageLength, res);
     },
+    GetAllFollows: function (req, res) {
+        const { id_user } = req.body;
+        follows.ReadAllUserFollows(id_user, (resmsg) => {
+            if (resmsg.code == -1) return res.status(500).send({
+                code: resmsg.code,
+                message: resmsg.message
+            });
+            else return res.status(200).send(resmsg);
+        });
+    },
     UserFollow: function (req, res) {
         const { following_id_user, follower_id_user } = req.body;
         follows.AddFollows(following_id_user, follower_id_user, res);

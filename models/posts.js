@@ -1,28 +1,51 @@
-const { MongoClient } = require("mongodb");
 const dotenv = require("dotenv");
+const { ObjectId } = require("mongodb");
+const _conn = require("../General/dbContext");
+const check = require("../General/check");
 dotenv.config();
-const random = require("../General/randomNumber");
 
-/* MongoData */
-const connStr = process.env.MONGO_DB_ATLAS;
-const client = new MongoClient(connStr, { useNewUrlParser: true, useUnifiedTopology: true });
-const database = process.env.MONGO_DB_DATABASE;
+/* Mongo collection */
 const collectionName = "posts";
 
 /* CRUD Operation */
 module.exports = {
-    // [GET] ReadList (Partially, Filtering, and Categorize)
-    ReadListPost: function (page, pageLength, category, res) {
+    // [GET] ReadList (Partially, Filtering, and Categorize) - add filter by name
+    ReadListPost: function (page, pageLength, filterByCategory, sortBy, res) {
+        if (check.isNull(page) || check.isNull(pageLength))
+            return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
-            client.connect().then(client => {
-                const postCol = client.db(database).collection(collectionName);
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                const posts = db.collection(collectionName);
                 // filtering
-
+                let filter = {};
+                if (!check.isNull(filterByCategory))
+                    filter = {categories: [filterByCategory]};
+                // sorting
+                let sort = {};
+                if (!check.isNull(sortBy)) {
+                    if (sortBy === "Popular") sort = {likes: -1};
+                    if (sortBy === "Latest") sort = {post_time: -1};
+                    if (sortBy === "Date") sort = {post_time: -1};
+                    if (sortBy === "Related") sort = {likes: -1, post_time: 1};
+                }
                 // pagination
                 let skip = (page - 1) * pageLength;
-                postCol.find({}, {limit: pageLength, skip: skip}).toArray((error, result) => {
+                posts.aggregate([
+                    {$match: filter},
+                    {$sort: sort},
+                    {$limit: pageLength},
+                    {$skip: skip},
+                    {$lookup:
+                        {
+                            from: 'users',
+                            localField: 'id_user',
+                            foreignField: '_id',
+                            as: 'user'
+                        }
+                    }
+                ]).toArray((error, result) => {
                     if (error) throw error;
-                    client.close();
                     if (result == null) {
                         return res.status(404).send({
                             code: 0,
@@ -37,7 +60,6 @@ module.exports = {
                 });
             });
         } catch (error) {
-            client.close();
             return res.status(500).send({
                 code: -1,
                 message: `Internal Server Error: ${error}`
@@ -47,12 +69,14 @@ module.exports = {
 
     // [GET] ReadByID (Detail)
     ReadByIDPost: function (id_post, res) {
+        if (!ObjectId.isValid(id_post))
+            return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
-            client.connect().then(client => {
-                const postCol = client.db(database).collection(collectionName);
-                postCol.findOne({id_post: id_post}, (error, result) => {
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                const posts = db.collection(collectionName);
+                posts.findOne({_id: ObjectId(id_post)}, (error, result) => {
                     if (error) throw error;
-                    client.close();
                     if (result == null) {
                         return res.status(404).send({
                             code: 0,
@@ -67,7 +91,6 @@ module.exports = {
                 });
             });
         } catch (error) {
-            client.close();
             return res.status(500).send({
                 code: -1,
                 message: `Internal Server Error: ${error}`
@@ -77,13 +100,15 @@ module.exports = {
 
     // [POST] Add (Used by userPost)
     AddPost: function (id_user, categories, title, desc, post_images, res) {
+        if (!ObjectId.isValid(id_user) || check.isNull(categories) || check.isNull(title) || check.isNull(post_images))
+            return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
-            client.connect().then(client => {
-                const postCol = client.db(database).collection(collectionName);
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                const posts = db.collection(collectionName);
                 // Create the document
                 const doc = {
-                    id_post: random.randomNumber(),
-                    id_user: Number(id_user),
+                    id_user: ObjectId(id_user),
                     categories: categories,
                     title: title,
                     desc: desc,
@@ -93,8 +118,7 @@ module.exports = {
                     post_time: Date.now(),
                     edited_time: 0
                 };
-                postCol.insertOne(doc).then(result => {
-                    client.close();
+                posts.insertOne(doc).then(result => {
                     return res.status(200).send({
                         code: 1,
                         message: "Post successfully created"
@@ -103,7 +127,7 @@ module.exports = {
                 .catch(error => { throw error });
             });
         } catch (error) {
-            client.close();
+            
             return res.status(500).send({
                 code: -1,
                 message: `Internal Server Error: ${error}`
@@ -113,36 +137,38 @@ module.exports = {
 
     // [PUT/PATCH] Edit
     EditPost: function (id_post, categories, title, desc, post_images, res) {
+        if (!ObjectId.isValid(id_post) || check.isNull(categories) || check.isNull(title) || check.isNull(post_images))
+            return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
-            client.connect().then(client => {
-                const postCol = client.db(database).collection(collectionName);
-                postCol.findOne({id_post: id_post}, (error, result) => {
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                const posts = db.collection(collectionName);
+                posts.findOne({_id: ObjectId(id_post)}, (error, result) => {
                     if (error) throw error;
                     if (result == null) {
-                        client.close();
                         return res.status(400).send({
                             code: 0,
                             message: `Bad Request`
                         });
                     }
-                    if (categories === undefined || categories === [] || categories === "")
+                    if (check.isNull(categories) || categories === [])
                         categories = result.categories;
-                    if (title === undefined || title === "")
+                    if (check.isNull(title))
                         title = result.title;
-                    if (desc === undefined || desc === "")
+                    if (check.isNull(desc))
                         desc = result.desc;
-                    if (post_images === undefined || post_images === [] || post_images === "")
+                    if (check.isNull(post_images) || post_images === [])
                         post_images = result.post_images;
                     
-                    postCol.updateOne({id_post: id_post}, {$set: {
+                    let doc = {
                         categories: categories,
                         title: title,
                         desc: desc,
                         post_images: post_images,
                         edited_time: Date.now()
-                    }}, (error, result) => {
+                    };
+                    posts.updateOne({_id: ObjectId(id_post)}, {$set: doc}, (error, result) => {
                         if (error) throw error;
-                        client.close();
                         if (result.modifiedCount == 0) {
                             return res.status(500).send({
                                 code: 0,
@@ -157,7 +183,6 @@ module.exports = {
                 });
             });
         } catch (error) {
-            client.close();
             return res.status(500).send({
                 code: -1,
                 message: `Internal Server Error: ${error}`
@@ -167,24 +192,25 @@ module.exports = {
 
     // [PUT/PATCH] Plus Like
     EditLikePost: function (id_post, like_by, res) {
+        if (!ObjectId.isValid(id_post) || check.isNull(like_by) || like_by === [])
+            return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
-            client.connect().then(client => {
-                const postCol = client.db(database).collection(collectionName);
-                postCol.findOne({id_post: id_post}, (error, result) => {
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                const posts = db.collection(collectionName);
+                posts.findOne({_id: ObjectId(id_post)}, (error, result) => {
                     if (error) throw error;
                     if (result == null) {
-                        client.close();
                         return res.status(400).send({
                             code: 0,
                             message: `Bad Request`
                         });
                     }
-                    postCol.updateOne({id_post: id_post}, {
+                    posts.updateOne({_id: ObjectId(id_post)}, {
                         $push: {like_by: like_by},
                         $set: {likes: result.likes+1}
                     }, (error, result) => {
                         if (error) throw error;
-                        client.close();
                         if (result.modifiedCount == 0) {
                             return res.status(500).send({
                                 code: 0,
@@ -199,7 +225,6 @@ module.exports = {
                 });
             });
         } catch (error) {
-            client.close();
             return res.status(500).send({
                 code: -1,
                 message: `Internal Server Error: ${error}`
@@ -209,12 +234,14 @@ module.exports = {
 
     // [DELETE] Delete Permanently
     DeletePost: function (id_post, res) {
+        if (!ObjectId.isValid(id_post))
+            return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
-            client.connect().then(client => {
-                const postCol = client.db(database).collection(collectionName);
-                postCol.deleteOne({id_post: id_post}, (error, result) => {
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                const posts = db.collection(collectionName);
+                posts.deleteOne({_id: ObjectId(id_post)}, (error, result) => {
                     if (error) throw error;
-                    client.close();
                     if (result.deletedCount == 0) {
                         return res.status(500).send({
                             code: 0,
@@ -228,7 +255,6 @@ module.exports = {
                 });
             });
         } catch (error) {
-            client.close();
             return res.status(500).send({
                 code: -1,
                 message: `Internal Server Error: ${error}`

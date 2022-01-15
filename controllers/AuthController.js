@@ -4,7 +4,6 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 module.exports = {
-    // [Passed]
     Login: function (req, res) {
         try {
             const { email, password } = req.body;
@@ -46,7 +45,6 @@ module.exports = {
             return res.sendStatus(403);
         }
     },
-    // [Passed]
     UserRegist: function (req, res) {
         const { email, username, fullname, password, job, profile_image } = req.body;
         AddUser(email, username, fullname, password, job, profile_image, res);
