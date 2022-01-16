@@ -3,7 +3,6 @@ const dotenv = require("dotenv");
 const { ObjectId } = require("mongodb");
 const _conn = require("../General/dbContext");
 const random = require("../General/randomNumber");
-const check = require("../General/check");
 dotenv.config();
 const saltRounds = 10;
 
@@ -14,7 +13,7 @@ const collectionName = "users";
 module.exports = {
     // [POST] Authentication Check
     Authentication: function (email, password, func) {
-        if (check.isNull(email) || check.isNull(password))
+        if (!email || !password)
             return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
             var validation = { result: false, error: '', user: '' };
@@ -28,6 +27,8 @@ module.exports = {
                             if (err) throw err;
                             if (!same) func(validation);
                             else {
+                                // unset password
+                                delete user.password;
                                 validation.result = true;
                                 validation.user = user;
                                 func(validation);
@@ -45,7 +46,7 @@ module.exports = {
 
     // [GET] ReadList (Searching) ~ Need more refision (filter)
     ReadListUser: function (filterByJob, page, pageLength, res) {
-        if (check.isNull(page) || check.isNull(pageLength))
+        if (!page || !pageLength)
             return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
@@ -53,9 +54,7 @@ module.exports = {
                 const users = db.collection(collectionName);
                 // filtering
                 let filter = {};
-                if (!check.isNull(filterByJob))
-                    filter = {job: filterByJob};
-                
+                if (filterByJob) filter = {job: filterByJob};
                 //pagination
                 let skip = (page - 1) * pageLength;
                 users.aggregate([
@@ -65,7 +64,7 @@ module.exports = {
                     {$skip: skip}
                 ]).toArray((error, result) => {
                     if (error) throw error;
-                    if (result == null) {
+                    if (result == null || result.length == 0) {
                         return res.status(404).send({
                             code: 0,
                             message: `Not Found`
@@ -100,7 +99,7 @@ module.exports = {
                 const users = db.collection(collectionName);
                 users.findOne({_id: ObjectId(id_user)}, (error, result) => {
                     if (error) throw error;
-                    if (result == null) {
+                    if (result == null || result.length == 0) {
                         return res.status(404).send({
                             code: 0,
                             message: `User doesn't exists`
@@ -123,7 +122,7 @@ module.exports = {
 
     // [POST] Add (Used by userRegist)
     AddUser: function (email, username, fullname, password, job, profile_image, res) {
-        if (check.isNull(email) || check.isNull(username) || check.isNull(fullname) || check.isNull(password) || check.isNull(job) || check.isNull(profile_image))
+        if (!email || !username || !fullname || !password || !job || !profile_image)
             return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
@@ -194,17 +193,17 @@ module.exports = {
                 const users = db.collection(collectionName);
                 users.findOne({_id: ObjectId(id_user)}, (error, result) => {
                     if (error) throw error;
-                    if (result == null) {
+                    if (result == null || result.length == 0) {
                         return res.status(400).send({
                             code: 0,
                             message: `Bad Request`
                         });
                     }
-                    if (check.isNull(email)) email = result.email;
-                    if (check.isNull(username)) username = result.username;
-                    if (check.isNull(fullname)) fullname = result.fullname;
-                    if (check.isNull(job)) job = result.job;
-                    if (check.isNull(profile_image)) profile_image = result.profile_image;
+                    if (!email) email = result.email;
+                    if (!username) username = result.username;
+                    if (!fullname) fullname = result.fullname;
+                    if (!job) job = result.job;
+                    if (!profile_image) profile_image = result.profile_image;
                     
                     let doc = {
                         email: email,
@@ -246,7 +245,7 @@ module.exports = {
                 const users = db.collection(collectionName);
                 users.findOne({_id: ObjectId(id_user)}, (error, result) => {
                     if (error) throw error;
-                    if (result == null) {
+                    if (result == null || result.length == 0) {
                         return res.status(400).send({
                             code: 0,
                             message: `Bad Request`

@@ -1,7 +1,6 @@
 const dotenv = require("dotenv");
 const { ObjectId } = require("mongodb");
 const _conn = require("../General/dbContext");
-const check = require("../General/check");
 dotenv.config();
 
 /* Mongo collection */
@@ -11,7 +10,7 @@ const collectionName = "comments";
 module.exports = {
     // [GET] ReadList (Partially)
     ReadListComment: function (id_post, page, pageLength, res) {
-        if (!ObjectId.isValid(id_post) || check.isNull(page) || check.isNull(pageLength))
+        if (!ObjectId.isValid(id_post) || !page || !pageLength)
             return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
@@ -38,7 +37,7 @@ module.exports = {
                     }
                 ]).toArray((error, result) => {
                     if (error) throw error;
-                    if (result == null) {
+                    if (result == null || result.length == 0) {
                         return res.status(404).send({
                             code: 0,
                             message: `Comment Not Found`
@@ -70,7 +69,7 @@ module.exports = {
                 const comments = db.collection(collectionName);
                 comments.findOne({_id: ObjectId(id_comment)}, (error, result) => {
                     if (error) throw error;
-                    if (result == null) {
+                    if (result == null || result.length == 0) {
                         return res.status(404).send({
                             code: 0,
                             message: `Comment Not Found`
@@ -93,7 +92,7 @@ module.exports = {
 
     // [POST] Add (Used by userPost)
     AddComment: function (id_user, id_post, comment_text, res) {
-        if (!ObjectId.isValid(id_user) || !ObjectId.isValid(id_post) || check.isNull(comment_text))
+        if (!ObjectId.isValid(id_user) || !ObjectId.isValid(id_post) || !comment_text)
             return res.status(400).send({ code: 0, message: `Bad request` });
         try {
             _conn.dbContext((error, db) => {
@@ -126,7 +125,7 @@ module.exports = {
 
     // [PUT/PATCH] Edit
     EditComment: function (id_comment, comment_text, res) {
-        if (!ObjectId.isValid(id_comment) || check.isNull(comment_text))
+        if (!ObjectId.isValid(id_comment) || !comment_text)
             return res.status(400).send({ code: 0, message: `Bad request` });
         try {
             _conn.dbContext((error, db) => {
@@ -134,7 +133,7 @@ module.exports = {
                 const comments = db.collection(collectionName);
                 comments.findOne({_id: ObjectId(id_comment)}, (error, result) => {
                     if (error) throw error;
-                    if (result == null) {
+                    if (result == null || result.length == 0) {
                         return res.status(400).send({
                             code: 0,
                             message: `Bad Request`
@@ -167,7 +166,7 @@ module.exports = {
 
     // [PUT/PATCH] Plus Like
     EditLikeComment: function (id_comment, like_by, res) {
-        if (!ObjectId.isValid(id_comment) || check.isNull(like_by) || like_by === [])
+        if (!ObjectId.isValid(id_comment) || !like_by || like_by === [])
             return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
@@ -175,7 +174,7 @@ module.exports = {
                 const comments = db.collection(collectionName);
                 comments.findOne({_id: ObjectId(id_comment)}, (error, result) => {
                     if (error) throw error;
-                    if (result == null) {
+                    if (result == null || result.length == 0) {
                         return res.status(400).send({
                             code: 0,
                             message: `Bad Request`

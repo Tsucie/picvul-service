@@ -22,8 +22,7 @@ module.exports = {
                     }).status(200).send({
                         code: 1,
                         message: "Login Successfully 😏 🍀",
-                        access_token: token,
-                        user: validation.user
+                        data: validation.user
                     });
                 }
             });

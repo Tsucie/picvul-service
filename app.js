@@ -27,7 +27,7 @@ app.put("/api/user/editpassword", auth.Authorization, user.UserEditPassword);
 app.delete("/api/user/delete", auth.Authorization, user.UserDeleteAccount);
 app.get("/api/post/getlist", auth.Authorization, post.PostGetList);
 app.get("/api/post/getdata", auth.Authorization, post.PostGetByID);
-app.post("/api/post/create", auth.Authorization, post.PostCreate);
+app.post("/api/post/upload", auth.Authorization, post.PostCreate);
 app.put("/api/post/edit", auth.Authorization, post.PostEdit);
 app.put("/api/post/like", auth.Authorization, post.PostLike);
 app.delete("/api/post/delete", auth.Authorization, post.PostDelete);

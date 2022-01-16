@@ -1,7 +1,6 @@
 const dotenv = require("dotenv");
 const { ObjectId } = require("mongodb");
 const _conn = require("../General/dbContext");
-const check = require("../General/check");
 dotenv.config();
 
 /* MongoData */
@@ -49,7 +48,16 @@ function readAll(collection, readContext, id_user, func) {
             }
         }
     ]).toArray((error, result) => {
-        func(error, result);
+        let data = [];
+        for (let i = 0; i < result.length; i++) {
+            // unset properties
+            delete result[i].user[0].password;
+            delete result[i].user[0].followings;
+            delete result[i].user[0].followers;
+            delete result[i].user[0].mylikes;
+            data.push(result[i].user[0]);
+        }
+        func(error, data);
     });
 }
 
@@ -57,12 +65,12 @@ function readAll(collection, readContext, id_user, func) {
 module.exports = {
     // [GET] ReadList for user following (Partially)
     ReadListFollowing: function (follower_id_user, page, pageLength, res) {
-        if (!ObjectId.isValid(follower_id_user) || check.isNull(page) || check.isNull(pageLength))
+        if (!ObjectId.isValid(follower_id_user) || !page || !pageLength)
             return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
             readList("following", follower_id_user, page, pageLength, (error, result) => {
                 if (error) throw error;
-                if (result == null) {
+                if (result == null || result.length == 0) {
                     return res.status(404).send({
                         code: 0,
                         message: `Not Found`
@@ -84,12 +92,12 @@ module.exports = {
 
     // [GET] ReadList for user follower (Partially)
     ReadListFollower: function (following_id_user, page, pageLength, res) {
-        if (!ObjectId.isValid(following_id_user) || check.isNull(page) || check.isNull(pageLength))
+        if (!ObjectId.isValid(following_id_user) || !page || !pageLength)
             return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
             readList("follower", following_id_user, page, pageLength, (error, result) => {
                 if (error) throw error;
-                if (result == null) {
+                if (result == null || result.length == 0) {
                     return res.status(404).send({
                         code: 0,
                         message: `Not Found`
@@ -160,11 +168,11 @@ module.exports = {
                     following_id_user: objIdFollowing,
                     follower_id_user: objIdFollower
                 };
-                follows.insertOne(doc).then(result => {
+                follows.insertOne(doc).then(() => {
                     const users = db.collection("users");
-                    users.updateOne({_id: objIdFollowing}, {$inc: {followers: 1}}, (err, updated) => {
+                    users.updateOne({_id: objIdFollowing}, {$inc: {followers: 1}}, (err) => {
                         if (err) throw err;
-                        users.updateOne({_id: objIdFollower}, {$inc: {followings: 1}}, (err, updated) => {
+                        users.updateOne({_id: objIdFollower}, {$inc: {followings: 1}}, (err) => {
                             if (err) throw err;
                             return res.status(200).send({
                                 code: 1,
@@ -206,9 +214,9 @@ module.exports = {
                         });
                     }
                     const users = db.collection("users");
-                    users.updateOne({_id: objIdFollowing}, {$inc: {followers: -1}}, (err, updated) => {
+                    users.updateOne({_id: objIdFollowing}, {$inc: {followers: -1}}, (err) => {
                         if (err) throw err;
-                        users.updateOne({_id: objIdFollower}, {$inc: {followings: -1}}, (err, updated) => {
+                        users.updateOne({_id: objIdFollower}, {$inc: {followings: -1}}, (err) => {
                             if (err) throw err;
                             return res.status(200).send({
                                 code: 1,

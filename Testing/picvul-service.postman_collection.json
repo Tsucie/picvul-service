@@ -1,0 +1,795 @@
+{
+	"info": {
+		"_postman_id": "dbb139a6-e217-44c9-832f-d16e16171211",
+		"name": "picvul-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "UserRegist",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"elshafira123@gmail.com\",\r\n    \"username\": \"elshafira\",\r\n    \"fullname\":\"El Shafira Rain\",\r\n    \"password\": \"password\",\r\n    \"job\": \"Illustrator\",\r\n    \"profile_image\": \"/cdn/public/el-shafira.webp\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/user/regist",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user",
+								"regist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UserGetList",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiWmlrcmkgTWFuc3l1cnN5YWgiLCJpYXQiOjE2NDIyNTM3NTN9.WKfA1VRyqhmji95RIGggFyTkeF1KaXt1AJNq7Goxi3k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"filterByJob\": \"\",\r\n    \"page\": 1,\r\n    \"pageLength\": 10\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/user/getlist",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user",
+								"getlist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UserGetByID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDY3NzcyMTU5OTA3MzU1MSwibmFtZSI6IkF5YW5va29qaTIiLCJpYXQiOjE2NDIxNzg3MzF9._72XD6eMDoWgJvthoBTVDwS2fcB2Y4npuzaw13h5gng",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_user\": \"61e2a4fc05e8eacac6c14b92\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/user/getdata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user",
+								"getdata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UserEditData",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiWmlrcmkgTWFuc3l1cnN5YWgiLCJpYXQiOjE2NDIyNTM3NTN9.WKfA1VRyqhmji95RIGggFyTkeF1KaXt1AJNq7Goxi3k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_user\": \"61e3073fa675626a1f46f568\",\r\n    \"fullname\": \"Lizza Manshour\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/user/editdata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user",
+								"editdata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UserEditPassword",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiWmlrcmkgTWFuc3l1cnN5YWgiLCJpYXQiOjE2NDIyNTM3NTN9.WKfA1VRyqhmji95RIGggFyTkeF1KaXt1AJNq7Goxi3k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_user\": \"61e3073fa675626a1f46f568\",\r\n    \"oldPassword\": \"password\",\r\n    \"newPassword\": \"newPassword\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/user/editpassword",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user",
+								"editpassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UserDelete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQWRqaSBQYW5nZXN0dSIsImlhdCI6MTY0MjI1NDY2OX0.2XDmsan_wKzYMtus-VQacvY-Ia6RApAXM1sT3bQoaBs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_user\": \"61e2ce68f2fdefd89d2e6ab3\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/user/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"zikrimansyursyah@gmail.com\",\r\n    \"password\": \"password123456\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQWRqaSBQYW5nZXN0dSIsImlhdCI6MTY0MjI1NDY2OX0.2XDmsan_wKzYMtus-VQacvY-Ia6RApAXM1sT3bQoaBs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Follows",
+			"item": [
+				{
+					"name": "GetFollows",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_user\": \"61e2a4fc05e8eacac6c14b92\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/follows",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"follows"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetListFollowing",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"follower_id_user\": \"61e2a4fc05e8eacac6c14b92\",\r\n    \"page\": 1,\r\n    \"pageLength\": 15\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/getlistfollowing",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"getlistfollowing"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetListFollower",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"following_id_user\": \"61e2a4fc05e8eacac6c14b92\",\r\n    \"page\": 1,\r\n    \"pageLength\": 15\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/getlistfollower",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"getlistfollower"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddFollow",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiWmlrcmkgTWFuc3l1cnN5YWgiLCJpYXQiOjE2NDIyNTM3NTN9.WKfA1VRyqhmji95RIGggFyTkeF1KaXt1AJNq7Goxi3k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"follower_id_user\": \"61e3073fa675626a1f46f568\",\r\n    \"following_id_user\": \"61e2a4fc05e8eacac6c14b92\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/addfollow",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"addfollow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UnFollow",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"follower_id_user\": \"61e3073fa675626a1f46f568\",\r\n    \"following_id_user\": \"61e2a4fc05e8eacac6c14b92\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/unfollow",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"unfollow"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "GetList",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\": 1,\r\n    \"pageLength\": 12,\r\n    \"filterByCategory\": \"3D Design\",\r\n    \"sortBy\": \"Popular\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/post/getlist",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"post",
+								"getlist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetData",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_post\": \"61e30f5ef40e968e39bcf135\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/post/getdata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"post",
+								"getdata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_user\": \"61e30767a675626a1f46f569\",\r\n    \"categories\": [\"3D Design\", \"Illustration\"],\r\n    \"title\": \"The Matrian\",\r\n    \"desc\": \"lorem ipsum dolor sit amet.\",\r\n    \"post_images\": [\r\n        {\r\n            \"idx\": 0,\r\n            \"path\": \"/cdn/public/pic1.webp\"\r\n        },\r\n        {\r\n            \"idx\": 1,\r\n            \"path\": \"/cdn/public/pic2.webp\"\r\n        },\r\n        {\r\n            \"idx\": 3,\r\n            \"path\": \"/cdn/public/pic3.webp\"\r\n        },\r\n        {\r\n            \"idx\": 4,\r\n            \"path\": \"/cdn/public/pic4.webp\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/post/upload",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"post",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/post/edit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"post",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Like",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_post\": \"61e43ebefe59e7317ae8bdd6\",\r\n    \"like_by\": \"zikri\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/post/like",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"post",
+								"like"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_post\": \"61e30f5ef40e968e39bcf135\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/post/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"post",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": []
+		}
+	]
+}
