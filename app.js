@@ -44,6 +44,6 @@ app.put("/api/comment/like", auth.Authorization, comment.CommentLike);
 app.delete("/api/comment/delete", auth.Authorization, comment.CommentDelete);
 
 // App Port
-app.listen(process.env.SERVER_PORT, () => {
-    console.log(`Service is listening on at ${process.env.APP_URL}:${process.env.SERVER_PORT}`);
+app.listen(process.env.PORT || 3000, () => {
+    console.log(`Service is listening port:${process.env.PORT}`);
 });
