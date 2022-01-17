@@ -603,7 +603,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id_post\": \"61e30f5ef40e968e39bcf135\"\r\n}"
+							"raw": "{\r\n    \"id_post\": \"61e4f783eeb023615d5f8326\"\r\n}"
 						},
 						"url": {
 							"raw": "http://localhost:5000/api/post/getdata",
@@ -644,7 +644,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id_user\": \"61e30767a675626a1f46f569\",\r\n    \"categories\": [\"3D Design\", \"Illustration\"],\r\n    \"title\": \"The Matrian\",\r\n    \"desc\": \"lorem ipsum dolor sit amet.\",\r\n    \"post_images\": [\r\n        {\r\n            \"idx\": 0,\r\n            \"path\": \"/cdn/public/pic1.webp\"\r\n        },\r\n        {\r\n            \"idx\": 1,\r\n            \"path\": \"/cdn/public/pic2.webp\"\r\n        },\r\n        {\r\n            \"idx\": 3,\r\n            \"path\": \"/cdn/public/pic3.webp\"\r\n        },\r\n        {\r\n            \"idx\": 4,\r\n            \"path\": \"/cdn/public/pic4.webp\"\r\n        }\r\n    ]\r\n}"
+							"raw": "{\r\n    \"id_user\": \"61e30767a675626a1f46f569\",\r\n    \"categories\": [\"Illustration\"],\r\n    \"title\": \"The Table\",\r\n    \"desc\": \"lorem ipsum dolor sit amet.\",\r\n    \"post_images\": [\r\n        {\r\n            \"idx\": 0,\r\n            \"path\": \"/cdn/public/pic1.webp\"\r\n        },\r\n        {\r\n            \"idx\": 1,\r\n            \"path\": \"/cdn/public/pic2.webp\"\r\n        },\r\n        {\r\n            \"idx\": 3,\r\n            \"path\": \"/cdn/public/pic3.webp\"\r\n        },\r\n        {\r\n            \"idx\": 4,\r\n            \"path\": \"/cdn/public/pic4.webp\"\r\n        }\r\n    ]\r\n}"
 						},
 						"url": {
 							"raw": "http://localhost:5000/api/post/upload",
@@ -685,7 +685,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \r\n}"
+							"raw": "{\r\n    \"id_post\": \"61e4f783eeb023615d5f8326\",\r\n    \"desc\": \"The perfect table\",\r\n    \"post_images\": [\r\n        {\r\n            \"idx\": 0,\r\n            \"path\": \"/cdn/public/pic1.webp\"\r\n        },\r\n        {\r\n            \"idx\": 1,\r\n            \"path\": \"/cdn/public/pic2.webp\"\r\n        }\r\n    ]\r\n}"
 						},
 						"url": {
 							"raw": "http://localhost:5000/api/post/edit",
@@ -789,7 +789,260 @@
 		},
 		{
 			"name": "Comments",
-			"item": []
+			"item": [
+				{
+					"name": "GetList",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_post\": \"61e43f02fe59e7317ae8bdd8\",\r\n    \"page\": 1,\r\n    \"pageLength\": 5\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/comment/getlist",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"comment",
+								"getlist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetData",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_comment\": \"61e4f92d71840b0fa1a31add\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/comment/getdata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"comment",
+								"getdata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_post\": \"61e43f02fe59e7317ae8bdd8\",\r\n    \"id_user\": \"61e306dba675626a1f46f566\",\r\n    \"comment_text\": \"Lorem ipsum!\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/comment/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"comment",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_comment\": \"61e4f92d71840b0fa1a31add\",\r\n    \"comment_text\": \"This design is very great!!\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/comment/edit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"comment",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Like",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_comment\": \"61e4f92d71840b0fa1a31add\",\r\n    \"like_by\": \"aurelien\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/comment/like",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"comment",
+								"like"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDIyNTQ3ODN9.EmnPgUUP1nVXt7c2SM5Ywj7_PfkqSuMSE6RD8vARLIs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_comment\": \"61e4f95c71840b0fa1a31ade\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/comment/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"comment",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

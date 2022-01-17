@@ -25,14 +25,14 @@ module.exports = {
                     if (user) {
                         bcrypt.compare(password, user.password, (err, same) => {
                             if (err) throw err;
-                            if (!same) func(validation);
-                            else {
+                            if (same) {
                                 // unset password
                                 delete user.password;
                                 validation.result = true;
                                 validation.user = user;
                                 func(validation);
                             }
+                            else func(validation);
                         });
                     }
                     else func(validation);
@@ -64,19 +64,24 @@ module.exports = {
                     {$skip: skip}
                 ]).toArray((error, result) => {
                     if (error) throw error;
-                    if (result == null || result.length == 0) {
-                        return res.status(404).send({
-                            code: 0,
-                            message: `Not Found`
-                        });
-                    }
-                    else {
+                    if (result) {
+                        for (let i = 0; i < result.length; i++) {
+                            // unset properties
+                            delete result[i].password;
+                            delete result[i].mylikes;
+                        }
                         return res.status(200).send({
                             code: 1,
                             message: `ReadList Successfully`,
                             page: page,
                             length: pageLength,
                             data: result
+                        });
+                    }
+                    else {
+                        return res.status(404).send({
+                            code: 0,
+                            message: `Not Found`
                         });
                     }
                 });
@@ -99,17 +104,21 @@ module.exports = {
                 const users = db.collection(collectionName);
                 users.findOne({_id: ObjectId(id_user)}, (error, result) => {
                     if (error) throw error;
-                    if (result == null || result.length == 0) {
+                    if (result) {
+                        // Unset property
+                        delete result.password;
+                        return res.status(200).send({
+                            code: 1,
+                            message: `Data successfully retrieved`,
+                            data: result
+                        });
+                    }
+                    else {
                         return res.status(404).send({
                             code: 0,
                             message: `User doesn't exists`
                         });
                     }
-                    return res.status(200).send({
-                        code: 1,
-                        message: `Data successfully retrieved`,
-                        data: result
-                    });
                 });
             });
         } catch (error) {

@@ -150,7 +150,7 @@ module.exports = {
                     like_by: [],
                     likes: 0,
                     post_time: dateTime.Now(),
-                    edited_time: 0
+                    edited_time: "0"
                 };
                 posts.insertOne(doc).then(result => {
                     return res.status(200).send({
@@ -171,7 +171,7 @@ module.exports = {
 
     // [PUT/PATCH] Edit
     EditPost: function (id_post, categories, title, desc, post_images, res) {
-        if (!ObjectId.isValid(id_post) || !categories || !title || !post_images)
+        if (!ObjectId.isValid(id_post))
             return res.status(400).send({ code: 0, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
