@@ -9,8 +9,7 @@ module.exports = {
             const { email, password } = req.body;
             Authentication(email, password, (validation) => {
                 if (!validation.result) {
-                    if (validation.error) throw validation.error;
-                    else return res.status(401).send({code: 0, message: "Email or Password is wrong"});
+                    return res.status(401).send({code: 0, message: "Email or Password is wrong"});
                 }
                 else {
                     // Create and assign token
