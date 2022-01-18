@@ -33,7 +33,7 @@ module.exports = {
         }
     },
     Authorization: function (req, res, next) {
-        const token = req.cookies.access_token;
+        const token = req.headers.access_token;
         try {
             if (!token) throw err;
             const data = jwt.verify(token, process.env.JWT_SECRET_KEY);
