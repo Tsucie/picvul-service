@@ -33,7 +33,8 @@ module.exports = {
         }
     },
     Authorization: function (req, res, next) {
-        const token = req.headers.access_token;
+        const authHeader = req.headers.Authorization;
+        const token = authHeader.split(" ")[1];
         try {
             if (!token) throw err;
             const data = jwt.verify(token, process.env.JWT_SECRET_KEY);
@@ -49,7 +50,7 @@ module.exports = {
     },
     Logout: function (req, res) {
         try {
-            res.clearCookie("access_token");
+            // res.clearCookie("access_token");
             return res.status(200).send({
                 code: 1,
                 message: "Successfully logged out 😏 🍀"
