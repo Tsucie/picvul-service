@@ -14,14 +14,14 @@ module.exports = {
                 }
                 else {
                     // Create and assign token
-                    let payload = { id: validation.user.id_user, name: validation.user.fullname};
+                    let payload = { id: validation.user.id_user, name: validation.user.fullname };
                     const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
-                    return res.cookie("access_token", token, {
-                        httpOnly: true,
-                        secure: process.env.APP_ENV === "production"
-                    }).status(200).send({
+                    return res.status(200).send({
                         code: 1,
                         message: "Login Successfully 😏 🍀",
+                        access_token: token,
+                        httpOnly: true,
+                        secure: process.env.APP_ENV === "production",
                         data: validation.user
                     });
                 }
