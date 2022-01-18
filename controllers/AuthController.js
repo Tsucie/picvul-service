@@ -33,7 +33,7 @@ module.exports = {
         }
     },
     Authorization: function (req, res, next) {
-        const authHeader = req.headers.Authorization;
+        const authHeader = req.header("Authorization");
         const token = authHeader.split(" ")[1];
         try {
             if (!token) throw err;
