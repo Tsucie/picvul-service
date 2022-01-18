@@ -11,6 +11,7 @@ BackEnd Service for picvul app
 - body-parser (v1.19.1^)
 - dotenv (v10.0.0^)
 - bcrypt (v5.0.1^)
+- cors (v2.8.5^)
 
 ## Other Tools
 - Nodemon (2.0.15^)
@@ -18,7 +19,7 @@ BackEnd Service for picvul app
 
 ## Installation
 - `npm init`
-- `npm i express express-basic-auth cookie-parser jsonwebtoken mongodb body-parser dotenv bcrypt`
+- `npm i express express-basic-auth cookie-parser jsonwebtoken mongodb body-parser dotenv bcrypt cors`
 - `npm i --save-dev nodemon`
 - Change `.env.example` file name to `.env`
 

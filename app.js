@@ -1,6 +1,7 @@
 const Express = require("express");
 const BodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
 const app = Express();
@@ -10,6 +11,7 @@ const post = require("./controllers/PostController");
 const follow = require("./controllers/FollowController");
 const comment = require("./controllers/CommentController");
 
+app.use(cors());
 app.use(cookieParser());
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({ extended: true }));
