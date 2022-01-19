@@ -94,6 +94,67 @@ module.exports = {
         }
     },
 
+    ReadUserUpdates: function (page, pageLength, res) {
+        if (!page || !pageLength)
+            return res.status(400).send({ code: 0, message: `Bad Request` });
+        try {
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                const users = db.collection(collectionName);
+                //pagination
+                let skip = (page - 1) * pageLength;
+                users.aggregate([
+                    {$lookup:
+                        {
+                            from: 'posts',
+                            localField: '_id',
+                            foreignField: 'id_user',
+                            as: 'post'
+                        }
+                    },
+                    {$match: {"post": {$ne: []}}},
+                    {$limit: pageLength},
+                    {$skip: skip}
+                ]).toArray((error, result) => {
+                    if (error) throw error;
+                    if (result) {
+                        let data = [];
+                        for (let i = 0; i < result.length; i++) {
+                            let ele = {
+                                id: result[i]._id,
+                                username: result[i].username,
+                                fullname: result[i].fullname,
+                                post_images: []
+                            };
+                            for (let j = 0; j < 3; j++) {
+                                ele.post_images.push(result[i].post[j].post_images[0]);
+                            }
+                            data.push(ele);
+                        }
+                        return res.status(200).send({
+                            code: 1,
+                            message: `ReadList Successfully`,
+                            page: page,
+                            length: pageLength,
+                            updates: data
+                        });
+                    }
+                    else {
+                        return res.status(404).send({
+                            code: 0,
+                            message: `Not Found`
+                        });
+                    }
+                });
+            });
+        } catch (error) {
+            return res.status(500).send({
+                code: -1,
+                message: `Internal Server Error: ${error}`
+            });
+        }
+    },
+
     // [GET] ReadByID (Detail)
     ReadByIDUser: function (id_user, res) {
         if (!ObjectId.isValid(id_user))

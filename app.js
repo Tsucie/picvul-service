@@ -27,6 +27,7 @@ app.get("/api/user/getdata", auth.Authorization, user.UserGetByID);
 app.put("/api/user/editdata", auth.Authorization, user.UserEditData);
 app.put("/api/user/editpassword", auth.Authorization, user.UserEditPassword);
 app.delete("/api/user/delete", auth.Authorization, user.UserDeleteAccount);
+app.get("/api/updates", auth.Authorization, user.UserGetUpdates);
 app.get("/api/post/getlist", auth.Authorization, post.PostGetList);
 app.get("/api/post/getdata", auth.Authorization, post.PostGetByID);
 app.post("/api/post/upload", auth.Authorization, post.PostCreate);
@@ -46,6 +47,6 @@ app.put("/api/comment/like", auth.Authorization, comment.CommentLike);
 app.delete("/api/comment/delete", auth.Authorization, comment.CommentDelete);
 
 // App Port
-app.listen(process.env.PORT || 3000, () => {
-    console.log(`Service is listening port:${process.env.PORT}`);
+app.listen(process.env.PORT || 5000, () => {
+    console.log(`Service is listening port:${process.env.PORT || 5000}`);
 });

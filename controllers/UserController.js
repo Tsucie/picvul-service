@@ -5,6 +5,10 @@ module.exports = {
         const { filterByJob, page, pageLength } = req.body;
         users.ReadListUser(filterByJob, page, pageLength, res);
     },
+    UserGetUpdates: function (req, res) {
+        const { page, pageLength } = req.body;
+        users.ReadUserUpdates(page, pageLength, res);
+    },
     UserGetByID: function (req, res) {
         const { id_user } = req.body;
         users.ReadByIDUser(id_user, res);

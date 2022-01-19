@@ -53,23 +53,22 @@ module.exports = {
                         });
                     }
                     else {
+                        let data = [];
                         for (let i = 0; i < result.length; i++) {
-                            // unset properties
-                            delete result[i].title;
-                            delete result[i].desc;
-                            delete result[i].post_time;
-                            delete result[i].edited_time;
-                            delete result[i].user[0]._id;
-                            delete result[i].user[0].email;
-                            delete result[i].user[0].password;
-                            delete result[i].user[0].followings;
-                            delete result[i].user[0].followers;
-                            delete result[i].user[0].mylikes;
+                            let ele = {
+                                id: result[i]._id,
+                                username: result[i].user[0].username,
+                                fullname: result[i].user[0].fullname,
+                                profil_img: result[i].user[0].profil_img,
+                                post_images: result[i].post_images,
+                                like_by: result[i].like_by
+                            };
+                            data.push(ele);
                         }
                         return res.status(200).send({
                             code: 1,
                             message: `ReadList Successfully`,
-                            data: result
+                            post: data
                         });
                     }
                 });
