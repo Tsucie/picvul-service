@@ -10,6 +10,7 @@ const user = require("./controllers/UserController");
 const post = require("./controllers/PostController");
 const follow = require("./controllers/FollowController");
 const comment = require("./controllers/CommentController");
+const categories = require("./controllers/CategoryController");
 
 app.use(cors());
 app.use(cookieParser());
@@ -45,6 +46,11 @@ app.post("/api/comment/create", auth.Authorization, comment.CommentCreate);
 app.put("/api/comment/edit", auth.Authorization, comment.CommentEdit);
 app.put("/api/comment/like", auth.Authorization, comment.CommentLike);
 app.delete("/api/comment/delete", auth.Authorization, comment.CommentDelete);
+app.get("/api/category/getlist", auth.Authorization, categories.GetAll);
+app.get("/api/category/getdata", auth.Authorization, categories.GetData);
+app.post("/api/category/add", auth.Authorization, categories.AddData);
+app.put("/api/category/edit", auth.Authorization, categories.EditData);
+app.delete("/api/category/delete", auth.Authorization, categories.DeleteData);
 
 // App Port
 app.listen(process.env.PORT || 5000, () => {
