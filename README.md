@@ -26,7 +26,7 @@ BackEnd Service for picvul app
 ## Running Service
 - `npm start`
 
-## API List (Soon)
+## API List
 ### Users
 |Feature         |Method          |uri                            |Requirement Parameter        |Description
 |----------------|----------------|-------------------------------|-----------------------------|-----------

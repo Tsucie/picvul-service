@@ -12,6 +12,8 @@ module.exports = {
                     return res.status(401).send({code: 0, message: "Email or Password is wrong"});
                 }
                 else {
+                    if (validation.user.status == false)
+                        return res.status(401).send({code: 0, message: "Account has deactivated"});
                     // Create and assign token
                     let payload = { id: validation.user.id_user, name: validation.user.fullname };
                     const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);

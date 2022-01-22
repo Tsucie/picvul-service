@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const { ObjectId } = require("mongodb");
 const _conn = require("../General/dbContext");
 const random = require("../General/randomNumber");
+const dateTime = require("../General/dateTime");
 dotenv.config();
 const saltRounds = 10;
 
@@ -228,7 +229,9 @@ module.exports = {
                                     profile_image: profile_image,
                                     followings: 0,
                                     followers: 0,
-                                    mylikes: []
+                                    mylikes: [],
+                                    status: true,
+                                    deleted: ""
                                 };
                                 users.insertOne(doc, (ero, result) => {
                                     if (ero) throw ero;
@@ -364,9 +367,17 @@ module.exports = {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
                 const users = db.collection(collectionName);
-                users.deleteOne({_id: ObjectId(id_user)}, (error, result) => {
+                users.updateOne(
+                    {_id: ObjectId(id_user)}, 
+                    {$set:
+                        {
+                            status: false,
+                            deleted: dateTime.Now()
+                        }
+                    },
+                    (error, result) => {
                     if (error) throw error;
-                    if (result.deletedCount == 0) {
+                    if (result.modifiedCount == 0) {
                         return res.status(500).send({
                             code: 0,
                             message: `Delete account failed`
