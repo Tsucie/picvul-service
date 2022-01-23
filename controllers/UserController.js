@@ -6,6 +6,7 @@ module.exports = {
         users.ReadListUser(filterByJob, page, pageLength, res);
     },
     UserGetUpdates: function (req, res) {
+        console.log(req.body);
         const { page, pageLength } = req.body;
         users.ReadUserUpdates(page, pageLength, res);
     },
