@@ -21,6 +21,10 @@ module.exports = {
         const { id_user, oldPassword, newPassword } = req.body;
         users.EditPassword(id_user, oldPassword, newPassword, res);
     },
+    UserResetPassword: function (req, res) {
+        const { email } = req.body;
+        users.ResetPassword(email, res);
+    },
     UserDeleteAccount: function (req, res) {
         const { id_user } = req.body;
         users.DeleteUser(id_user, res);

@@ -27,6 +27,7 @@ app.get("/api/user/getlist", auth.Authorization, user.UserGetList);
 app.get("/api/user/getdata", auth.Authorization, user.UserGetByID);
 app.put("/api/user/editdata", auth.Authorization, user.UserEditData);
 app.put("/api/user/editpassword", auth.Authorization, user.UserEditPassword);
+app.put("/api/user/resetpassword", user.UserResetPassword);
 app.delete("/api/user/delete", auth.Authorization, user.UserDeleteAccount);
 app.get("/api/updates", auth.Authorization, user.UserGetUpdates);
 app.get("/api/post/getlist", auth.Authorization, post.PostGetList);

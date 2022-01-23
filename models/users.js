@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 const { ObjectId } = require("mongodb");
+const nodemailer = require("nodemailer");
 const _conn = require("../General/dbContext");
 const random = require("../General/randomNumber");
 const dateTime = require("../General/dateTime");
@@ -15,7 +16,7 @@ module.exports = {
     // [POST] Authentication Check
     Authentication: function (email, password, func) {
         if (!email || !password)
-            return res.status(400).send({ code: 0, message: `Bad Request` });
+            return res.send({ code: 400, message: `Bad Request` });
         try {
             var validation = { result: false, error: '', user: '' };
             _conn.dbContext((error, db) => {
@@ -48,7 +49,7 @@ module.exports = {
     // [GET] ReadList (Searching) ~ Need more refision (filter)
     ReadListUser: function (filterByJob, page, pageLength, res) {
         if (!page || !pageLength)
-            return res.status(400).send({ code: 0, message: `Bad Request` });
+            return res.send({ code: 400, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
@@ -71,8 +72,8 @@ module.exports = {
                             delete result[i].password;
                             delete result[i].mylikes;
                         }
-                        return res.status(200).send({
-                            code: 1,
+                        return res.send({
+                            code: 200,
                             message: `ReadList Successfully`,
                             page: page,
                             length: pageLength,
@@ -80,24 +81,18 @@ module.exports = {
                         });
                     }
                     else {
-                        return res.status(404).send({
-                            code: 0,
-                            message: `Not Found`
-                        });
+                        return res.send({ code: 404, message: `Not Found` });
                     }
                 });
             });
         } catch (error) {
-            return res.status(500).send({
-                code: -1,
-                message: `Internal Server Error: ${error}`
-            });
+            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
 
     ReadUserUpdates: function (page, pageLength, res) {
         if (!page || !pageLength)
-            return res.status(400).send({ code: 0, message: `Bad Request` });
+            return res.send({ code: 400, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
@@ -119,47 +114,37 @@ module.exports = {
                 ]).toArray((error, result) => {
                     if (error) throw error;
                     if (result) {
-                        let data = [];
-                        for (let i = 0; i < result.length; i++) {
-                            let ele = {
-                                id: result[i]._id,
-                                username: result[i].username,
-                                fullname: result[i].fullname,
-                                post_images: []
-                            };
-                            for (let j = 0; j < 3; j++) {
-                                ele.post_images.push(result[i].post[j].post_images[0]);
-                            }
-                            data.push(ele);
-                        }
-                        return res.status(200).send({
-                            code: 1,
+                        result.forEach(e => {
+                            delete e._id;
+                            delete e.email;
+                            delete e.password;
+                            delete e.job;
+                            delete e.followings;
+                            delete e.followers;
+                            delete e.mylikes;
+                        });
+                        return res.send({
+                            code: 200,
                             message: `ReadList Successfully`,
                             page: page,
                             length: pageLength,
-                            updates: data
+                            updates: result
                         });
                     }
                     else {
-                        return res.status(404).send({
-                            code: 0,
-                            message: `Not Found`
-                        });
+                        return res.send({ code: 404, message: `Not Found` });
                     }
                 });
             });
         } catch (error) {
-            return res.status(500).send({
-                code: -1,
-                message: `Internal Server Error: ${error}`
-            });
+            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
 
     // [GET] ReadByID (Detail)
     ReadByIDUser: function (id_user, res) {
         if (!ObjectId.isValid(id_user))
-            return res.status(400).send({ code: 0, message: `Bad Request` });
+            return res.send({ code: 400, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
@@ -169,32 +154,26 @@ module.exports = {
                     if (result) {
                         // Unset property
                         delete result.password;
-                        return res.status(200).send({
-                            code: 1,
+                        return res.send({
+                            code: 200,
                             message: `Data successfully retrieved`,
                             data: result
                         });
                     }
                     else {
-                        return res.status(404).send({
-                            code: 0,
-                            message: `User doesn't exists`
-                        });
+                        return res.send({ code: 404, message: `User doesn't exists` });
                     }
                 });
             });
         } catch (error) {
-            return res.status(500).send({
-                code: -1,
-                message: `Internal Server Error: ${error}`
-            });
+            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
 
     // [POST] Add (Used by userRegist)
     AddUser: function (email, username, fullname, password, job, profile_image, res) {
         if (!email || !username || !fullname || !password || !job || !profile_image)
-            return res.status(400).send({ code: 0, message: `Bad Request` });
+            return res.send({ code: 400, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
@@ -203,7 +182,7 @@ module.exports = {
                 users.countDocuments({email: email}, (error, value) => {
                     if (error) throw error;
                     if (value > 0) {
-                        return res.status(200).send({
+                        return res.send({
                             code: 406,
                             message: `${email} is already exists, try login with your registered email`
                         });
@@ -213,8 +192,8 @@ module.exports = {
                         users.countDocuments({username: username}, (err, val) => {
                             if (err) throw err;
                             if (val > 0) {
-                                return res.status(406).send({
-                                    code: 0,
+                                return res.send({
+                                    code: 406,
                                     message: `${username} has taken, try ${username + random.randomNumber(1000, 9999)}`
                                 });
                             }
@@ -236,8 +215,8 @@ module.exports = {
                                 users.insertOne(doc, (ero, result) => {
                                     if (ero) throw ero;
                                     if (result.insertedId) {
-                                        return res.status(200).send({
-                                            code: 1,
+                                        return res.send({
+                                            code: 200,
                                             message: "Account successfully created",
                                             id_user: result.insertedId
                                         });
@@ -249,17 +228,14 @@ module.exports = {
                 });
             });
         } catch (error) {
-            return res.status(500).send({
-                code: -1,
-                message: `Internal Server Error: ${error}`
-            });
+            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
 
     // [PUT/PATCH] Edit
     EditUser: function (id_user, email, username, fullname, job, profile_image, res) {
         if (!ObjectId.isValid(id_user))
-            return res.status(400).send({ code: 0, message: `Bad Request` });
+            return res.send({ code: 400, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
@@ -267,10 +243,7 @@ module.exports = {
                 users.findOne({_id: ObjectId(id_user)}, (error, result) => {
                     if (error) throw error;
                     if (result == null || result.length == 0) {
-                        return res.status(400).send({
-                            code: 0,
-                            message: `Bad Request`
-                        });
+                        return res.send({ code: 400, message: `Bad Request` });
                     }
                     if (!email) email = result.email;
                     if (!username) username = result.username;
@@ -288,30 +261,21 @@ module.exports = {
                     users.updateOne({_id: ObjectId(id_user)}, {$set: doc}, (error, result) => {
                         if (error) throw error;
                         if (result.modifiedCount == 0) {
-                            return res.status(500).send({
-                                code: 0,
-                                message: `Update account data failed`
-                            });
+                            return res.send({ code: 500, message: `Update account data failed` });
                         }
-                        return res.status(200).send({
-                            code: 1,
-                            message: `Account data has updated`
-                        });
+                        return res.send({ code: 200, message: `Account data has updated` });
                     });
                 });
             });
         } catch (error) {
-            return res.status(500).send({
-                code: -1,
-                message: `Internal Server Error: ${error}`
-            });
+            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
 
     // [PUT/PATCH] EditPassword
     EditPassword: function (id_user, oldPassword, newPassword, res) {
         if (!ObjectId.isValid(id_user))
-            return res.status(400).send({ code: 0, message: `Bad Request` });
+            return res.send({ code: 400, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
@@ -319,16 +283,13 @@ module.exports = {
                 users.findOne({_id: ObjectId(id_user)}, (error, result) => {
                     if (error) throw error;
                     if (result == null || result.length == 0) {
-                        return res.status(400).send({
-                            code: 0,
-                            message: `Bad Request`
-                        });
+                        return res.send({ code: 400, message: `Bad Request` });
                     }
                     bcrypt.compare(oldPassword, result.password, (err, same) => {
                         if (err) throw err;
                         if (same == false) {
-                            return res.status(406).send({
-                                code: 0,
+                            return res.send({
+                                code: 406,
                                 message: `Old password doesn't match with user password`
                             });
                         }
@@ -337,63 +298,97 @@ module.exports = {
                             users.updateOne({_id: ObjectId(id_user)}, {$set: {password: encrypted}}, (errs, result) => {
                                 if (errs) throw errs;
                                 if (result.modifiedCount == 0) {
-                                    return res.status(500).send({
-                                        code: 0,
-                                        message: `Update password failed`
-                                    });
+                                    return res.send({ code: 500, message: `Update password failed` });
                                 }
-                                return res.status(200).send({
-                                    code: 1,
-                                    message: `Password has updated`
-                                });
+                                return res.send({ code: 200, message: `Password has updated` });
                             });
                         });
                     });
                 });
             });
         } catch (error) {
-            return res.status(500).send({
-                code: -1,
-                message: `Internal Server Error: ${error}`
+            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
+        }
+    },
+
+    // [PUT/PATCH] ResetPassword
+    ResetPassword: function (email, res) {
+        if (!email)
+            return res.send({ code: 400, message: `Bad Request` });
+        try {
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                const users = db.collection(collectionName);
+                users.findOne({email: email})
+                    .then(result => {
+                        if (!result) {
+                            return res.send({ code: 406, message: `Email not registered` });
+                        }
+                        else {
+                            let pwd = Math.random().toString(36).slice(-8);
+                            users.updateOne({_id: ObjectId(result._id)}, {$set: {
+                                password: bcrypt.hashSync(pwd, saltRounds)
+                            }},
+                            (error, updateResult) => {
+                                if (error) throw error;
+                                if (updateResult.modifiedCount == 0) {
+                                    return res.send({ code: 500, message: `Reset password failed` });
+                                }
+                                else {
+                                    let transporter = nodemailer.createTransport({
+                                        service: 'gmail',
+                                        auth: {
+                                            user: 'picvulcorp@gmail.com',
+                                            pass: '$Picvul2022'
+                                        }
+                                    });
+                                    let mailoptions = {
+                                        from: 'picvulcorp@gmail.com',
+                                        to: email,
+                                        subject: 'Picvul Account Reset Password',
+                                        html: `<h3>Dear ${result.fullname}</h3>
+                                        <p>Your password has reset to ${pwd}. Please login with your email and this password</p>
+                                        <a href="${process.env.APP_URL}" role="button" style="box-shadow: 0px 10px 14px -7px #276873;background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);background-color:#599bb3;border-radius:8px;display:inline-block;cursor:pointer;color:#ffffff;font-family:Arial;font-size:20px;font-weight:bold;padding:13px 32px;text-decoration:none;text-shadow:0px 1px 0px #3d768a;">Login</a>`
+                                    }
+                                    transporter.sendMail(mailoptions, (err, info) => {
+                                        if (err) throw err;
+                                        return res.send({
+                                            code: 200,
+                                            message: `Email sent: ${info.response}`
+                                        });
+                                    });
+                                }
+                            });
+                        }
+                    })
+                    .catch(err => { throw err });
             });
+        } catch (error) {
+            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
 
     // [DELETE] Delete Permanently
     DeleteUser: function (id_user, res) {
         if (!ObjectId.isValid(id_user))
-            return res.status(400).send({ code: 0, message: `Bad Request` });
+            return res.send({ code: 400, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
                 const users = db.collection(collectionName);
                 users.updateOne(
                     {_id: ObjectId(id_user)}, 
-                    {$set:
-                        {
-                            status: false,
-                            deleted: dateTime.Now()
-                        }
-                    },
+                    {$set: { status: false, deleted: dateTime.Now() }},
                     (error, result) => {
                     if (error) throw error;
                     if (result.modifiedCount == 0) {
-                        return res.status(500).send({
-                            code: 0,
-                            message: `Delete account failed`
-                        });
+                        return res.send({ code: 500, message: `Delete account failed` });
                     }
-                    return res.status(200).send({
-                        code: 1,
-                        message: `Account has deleted`
-                    });
+                    return res.send({ code: 200, message: `Account has deleted` });
                 });
             });
         } catch (error) {
-            return res.status(500).send({
-                code: -1,
-                message: `Internal Server Error: ${error}`
-            });
+            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
 };

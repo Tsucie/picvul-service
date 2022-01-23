@@ -12,11 +12,11 @@ module.exports = {
     GetAllFollows: function (req, res) {
         const { id_user } = req.body;
         follows.ReadAllUserFollows(id_user, (resmsg) => {
-            if (resmsg.code == -1) return res.status(500).send({
-                code: resmsg.code,
+            if (resmsg.code == -1) return res.send({
+                code: 500,
                 message: resmsg.message
             });
-            else return res.status(200).send(resmsg);
+            else return res.send(resmsg);
         });
     },
     UserFollow: function (req, res) {

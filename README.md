@@ -12,6 +12,7 @@ BackEnd Service for picvul app
 - dotenv (v10.0.0^)
 - bcrypt (v5.0.1^)
 - cors (v2.8.5^)
+- nodemailer (v6.7.2^)
 
 ## Other Tools
 - Nodemon (2.0.15^)
@@ -19,7 +20,7 @@ BackEnd Service for picvul app
 
 ## Installation
 - `npm init`
-- `npm i express express-basic-auth cookie-parser jsonwebtoken mongodb body-parser dotenv bcrypt cors`
+- `npm i express express-basic-auth cookie-parser jsonwebtoken mongodb body-parser dotenv bcrypt cors nodemailer`
 - `npm i --save-dev nodemon`
 - Change `.env.example` file name to `.env`
 
@@ -37,6 +38,7 @@ BackEnd Service for picvul app
 | GetByID | `GET` | `/api/user/getdata` | header **Bearer Token** & body **json**: `{id_user:ObjectID(string)}` | Get specific user account
 | Edit | `PUT` | `/api/user/editdata` | header **Bearer Token** & body **json**: `{id_user:ObjectID(string), edited fields}` | Edit data of user account
 | EditPassword | `PUT` | `/api/user/editpassword` | header **Bearer Token** & body **json**: `{id_user:ObjectID(string), oldPassword:string, newPassword:string}` | Edit password of user account
+| ResetPassword | `PUT` | `/api/user/resetpassword` | header **Bearer Token** & body **json**: `{email: string}` | Reset password of user account
 | Delete | `DELETE` | `/api/user/delete` | header **Bearer Token** & body **json**: `{id_user:ObjectID(string)}` | Delete user account data
 
 ### Follows

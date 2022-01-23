@@ -66,54 +66,42 @@ module.exports = {
     // [GET] ReadList for user following (Partially)
     ReadListFollowing: function (follower_id_user, page, pageLength, res) {
         if (!ObjectId.isValid(follower_id_user) || !page || !pageLength)
-            return res.status(400).send({ code: 0, message: `Bad Request` });
+            return res.send({ code: 400, message: `Bad Request` });
         try {
             readList("following", follower_id_user, page, pageLength, (error, result) => {
                 if (error) throw error;
                 if (result == null || result.length == 0) {
-                    return res.status(404).send({
-                        code: 0,
-                        message: `Not Found`
-                    });
+                    return res.send({ code: 404, message: `Not Found` });
                 }
-                return res.status(200).send({
-                    code: 1,
+                return res.send({
+                    code: 200,
                     message: `Read following list Successfully`,
                     data: result
                 });
             });
         } catch (error) {
-            return res.status(500).send({
-                code: -1,
-                message: `Internal Server Error: ${error}`
-            });
+            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
 
     // [GET] ReadList for user follower (Partially)
     ReadListFollower: function (following_id_user, page, pageLength, res) {
         if (!ObjectId.isValid(following_id_user) || !page || !pageLength)
-            return res.status(400).send({ code: 0, message: `Bad Request` });
+            return res.send({ code: 400, message: `Bad Request` });
         try {
             readList("follower", following_id_user, page, pageLength, (error, result) => {
                 if (error) throw error;
                 if (result == null || result.length == 0) {
-                    return res.status(404).send({
-                        code: 0,
-                        message: `Not Found`
-                    });
+                    return res.send({ code: 404, message: `Not Found` });
                 }
-                return res.status(200).send({
-                    code: 1,
+                return res.send({
+                    code: 200,
                     message: `Read follower list Successfully`,
                     data: result
                 });
             });
         } catch (error) {
-            return res.status(500).send({
-                code: -1,
-                message: `Internal Server Error: ${error}`
-            });
+            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
 
@@ -157,7 +145,7 @@ module.exports = {
     // [POST] Add (Used by userFollow)
     AddFollows: function (following_id_user, follower_id_user, res) {
         if (!ObjectId.isValid(following_id_user) || !ObjectId.isValid(follower_id_user))
-            return res.status(400).send({ code: 0, message: `Bad Request` });
+            return res.send({ code: 400, message: `Bad Request` });
         try {
             let objIdFollowing = ObjectId(following_id_user);
             let objIdFollower = ObjectId(follower_id_user);
@@ -174,27 +162,21 @@ module.exports = {
                         if (err) throw err;
                         users.updateOne({_id: objIdFollower}, {$inc: {followings: 1}}, (err) => {
                             if (err) throw err;
-                            return res.status(200).send({
-                                code: 1,
-                                message: "User followed"
-                            });
+                            return res.send({ code: 200, message: "User followed" });
                         });
                     });
                 })
                 .catch(error => { throw error });
             });
         } catch (error) {
-            return res.status(500).send({
-                code: -1,
-                message: `Internal Server Error: ${error}`
-            });
+            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
 
     // [DELETE] Delete Permanently (Used by userUnfollow)
     DeleteFollows: function (following_id_user, follower_id_user, res) {
         if (!ObjectId.isValid(following_id_user) || !ObjectId.isValid(follower_id_user))
-            return res.status(400).send({ code: 0, message: `Bad Request` });
+            return res.send({ code: 400, message: `Bad Request` });
         try {
             let objIdFollowing = ObjectId(following_id_user);
             let objIdFollower = ObjectId(follower_id_user);
@@ -208,29 +190,20 @@ module.exports = {
                 (error, result) => {
                     if (error) throw error;
                     if (result.deletedCount == 0) {
-                        return res.status(500).send({
-                            code: 0,
-                            message: `Unfollow failed`
-                        });
+                        return res.send({ code: 500, message: `Unfollow failed` });
                     }
                     const users = db.collection("users");
                     users.updateOne({_id: objIdFollowing}, {$inc: {followers: -1}}, (err) => {
                         if (err) throw err;
                         users.updateOne({_id: objIdFollower}, {$inc: {followings: -1}}, (err) => {
                             if (err) throw err;
-                            return res.status(200).send({
-                                code: 1,
-                                message: `User unfollowed`
-                            });
+                            return res.send({ code: 200, message: `User unfollowed` });
                         });
                     });
                 });
             });
         } catch (error) {
-            return res.status(500).send({
-                code: -1,
-                message: `Internal Server Error: ${error}`
-            });
+            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     }
 };
