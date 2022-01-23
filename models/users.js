@@ -203,8 +203,8 @@ module.exports = {
                 users.countDocuments({email: email}, (error, value) => {
                     if (error) throw error;
                     if (value > 0) {
-                        return res.status(406).send({
-                            code: 0,
+                        return res.status(200).send({
+                            code: 406,
                             message: `${email} is already exists, try login with your registered email`
                         });
                     }
