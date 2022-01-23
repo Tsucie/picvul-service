@@ -5,7 +5,7 @@ module.exports = {
         categories.ReadAll(res);
     },
     GetData: function (req, res) {
-        const { id } = req.body;
+        const { id } = req.params;
         categories.ReadByID(id, res);
     },
     AddData: function (req, res) {

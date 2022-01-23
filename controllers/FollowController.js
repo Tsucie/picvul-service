@@ -10,7 +10,7 @@ module.exports = {
         follows.ReadListFollower(following_id_user, page, pageLength, res);
     },
     GetAllFollows: function (req, res) {
-        const { id_user } = req.body;
+        const { id_user } = req.params;
         follows.ReadAllUserFollows(id_user, (resmsg) => {
             if (resmsg.code == -1) return res.send({
                 code: 500,

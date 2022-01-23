@@ -6,7 +6,7 @@ module.exports = {
         comments.ReadListComment(id_post, page, pageLength, res);
     },
     CommentGetByID: function (req, res) {
-        const { id_comment } = req.body;
+        const { id_comment } = req.params;
         comments.ReadByIDComment(id_comment, res);
     },
     CommentCreate: function (req, res) {
@@ -22,7 +22,7 @@ module.exports = {
         comments.EditLikeComment(id_comment, like_by, res);
     },
     CommentDelete: function (req, res) {
-        const { id_comment } = req.body;
+        const { id_comment } = req.params;
         comments.DeleteComment(id_comment, res);
     }
 }

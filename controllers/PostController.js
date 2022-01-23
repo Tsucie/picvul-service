@@ -7,7 +7,7 @@ module.exports = {
         posts.ReadListPost(page, pageLength, filterByCategory, sortBy, res);
     },
     PostGetByID: function (req, res) {
-        const { id_post } = req.body;
+        const { id_post } = req.params;
         posts.ReadByIDPost(id_post, res);
     },
     PostCreate: function (req, res) {
@@ -23,7 +23,7 @@ module.exports = {
         posts.EditLikePost(id_post, like_by, res);
     },
     PostDelete: function (req, res) {
-        const { id_post } = req.body;
+        const { id_post } = req.params;
         posts.DeletePost(id_post, res);
     }
 }

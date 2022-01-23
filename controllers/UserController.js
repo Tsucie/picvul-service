@@ -11,7 +11,7 @@ module.exports = {
         users.ReadUserUpdates(page, pageLength, res);
     },
     UserGetByID: function (req, res) {
-        const { id_user } = req.body;
+        const { id_user } = req.params;
         users.ReadByIDUser(id_user, res);
     },
     UserEditData: function (req, res) {
@@ -27,7 +27,7 @@ module.exports = {
         users.ResetPassword(email, res);
     },
     UserDeleteAccount: function (req, res) {
-        const { id_user } = req.body;
+        const { id_user } = req.params;
         users.DeleteUser(id_user, res);
     }
 }
