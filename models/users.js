@@ -16,7 +16,7 @@ module.exports = {
     // [POST] Authentication Check
     Authentication: function (email, password, func) {
         if (!email || !password)
-            return res.send({ code: 400, message: `Bad Request` });
+            return res.status(400).send({ code: 400, message: `Bad Request` });
         try {
             var validation = { result: false, error: '', user: '' };
             _conn.dbContext((error, db) => {

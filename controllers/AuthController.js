@@ -9,15 +9,15 @@ module.exports = {
             const { email, password } = req.body;
             Authentication(email, password, (validation) => {
                 if (!validation.result) {
-                    return res.send({code: 401, message: "Email or Password is wrong"});
+                    return res.status(401).send({code: 401, message: "Email or Password is wrong"});
                 }
                 else {
                     if (validation.user.status == false)
-                        return res.send({code: 401, message: "Account has deactivated"});
+                        return res.status(401).send({code: 401, message: "Account has deactivated"});
                     // Create and assign token
                     let payload = { id: validation.user.id_user, name: validation.user.fullname };
                     const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
-                    return res.send({
+                    return res.status(200).send({
                         code: 200,
                         message: "Login Successfully 😏 🍀",
                         access_token: token,
@@ -28,7 +28,7 @@ module.exports = {
                 }
             });
         } catch (error) {
-            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
+            return res.status(500).send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
     Authorization: function (req, res, next) {
