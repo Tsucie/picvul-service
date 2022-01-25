@@ -12,7 +12,7 @@ module.exports = {
     // [GET] ReadList (Partially, Filtering, and Categorize) - add filter by name
     ReadListPost: function (page, pageLength, filterByCategory, sortBy, res) {
         if (!page || !pageLength)
-            return res.send({ code: 400, message: `Bad Request` });
+            return res.status(400).send({ code: 400, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
@@ -47,7 +47,7 @@ module.exports = {
                 ]).toArray((error, result) => {
                     if (error) throw error;
                     if (result == null || result.length == 0) {
-                        return res.send({ code: 404, message: `Not Found` });
+                        return res.status(404).send({ code: 404, message: `Not Found` });
                     }
                     else {
                         let data = [];
@@ -62,7 +62,7 @@ module.exports = {
                             };
                             data.push(ele);
                         });
-                        return res.send({
+                        return res.status(200).send({
                             code: 200,
                             message: `ReadList Successfully`,
                             post: data
@@ -71,14 +71,14 @@ module.exports = {
                 });
             });
         } catch (error) {
-            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
+            return res.status(500).send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
 
     // [GET] ReadByID (Detail)
     ReadByIDPost: function (id_post, res) {
         if (!ObjectId.isValid(id_post))
-            return res.send({ code: 400, message: `Bad Request` });
+            return res.status(400).send({ code: 400, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
@@ -106,7 +106,7 @@ module.exports = {
                         delete result[0].user[0].followings;
                         delete result[0].user[0].followers;
                         delete result[0].user[0].mylikes;
-                        return res.send({
+                        return res.status(200).send({
                             code: 200,
                             message: `Post successfully retrieved`,
                             data: result[0]
@@ -115,14 +115,14 @@ module.exports = {
                 });
             });
         } catch (error) {
-            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
+            return res.status(500).send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
 
     // [POST] Add (Used by userPost)
     AddPost: function (id_user, categories, title, desc, post_images, res) {
         if (!ObjectId.isValid(id_user) || !categories || !title || !desc || !post_images)
-            return res.send({ code: 400, message: `Bad Request` });
+            return res.status(400).send({ code: 400, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
@@ -140,19 +140,19 @@ module.exports = {
                     edited_time: "0"
                 };
                 posts.insertOne(doc).then(result => {
-                    return res.send({ code: 200, message: "Post successfully created" });
+                    return res.status(200).send({ code: 200, message: "Post successfully created" });
                 })
                 .catch(error => { throw error });
             });
         } catch (error) {
-            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
+            return res.status(500).send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
 
     // [PUT/PATCH] Edit
     EditPost: function (id_post, categories, title, desc, post_images, res) {
         if (!ObjectId.isValid(id_post))
-            return res.send({ code: 400, message: `Bad Request` });
+            return res.status(400).send({ code: 400, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
@@ -160,7 +160,7 @@ module.exports = {
                 posts.findOne({_id: ObjectId(id_post)}, (error, result) => {
                     if (error) throw error;
                     if (result == null) {
-                        return res.send({ code: 400, message: `Bad Request` });
+                        return res.status(400).send({ code: 400, message: `Bad Request` });
                     }
                     if (!categories || categories === [])
                         categories = result.categories;
@@ -181,21 +181,21 @@ module.exports = {
                     posts.updateOne({_id: ObjectId(id_post)}, {$set: doc}, (error, result) => {
                         if (error) throw error;
                         if (result.modifiedCount == 0) {
-                            return res.send({ code: 500, message: `Update Post failed` });
+                            return res.status(500).send({ code: 500, message: `Update Post failed` });
                         }
-                        return res.send({ code: 200, message: `Post has updated` });
+                        return res.status(200).send({ code: 200, message: `Post has updated` });
                     });
                 });
             });
         } catch (error) {
-            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
+            return res.status(500).send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
 
     // [PUT/PATCH] Plus Like
     EditLikePost: function (id_post, like_by, res) {
         if (!ObjectId.isValid(id_post) || !like_by)
-            return res.send({ code: 400, message: `Bad Request` });
+            return res.status(400).send({ code: 400, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
@@ -203,7 +203,7 @@ module.exports = {
                 posts.findOne({_id: ObjectId(id_post)}, (error, result) => {
                     if (error) throw error;
                     if (result == null) {
-                        return res.send({ code: 400, message: `Bad Request` });
+                        return res.status(400).status(400).send({ code: 400, message: `Bad Request` });
                     }
                     posts.updateOne({_id: ObjectId(id_post)}, {
                         $push: {like_by: like_by},
@@ -211,7 +211,7 @@ module.exports = {
                     }, (error, result) => {
                         if (error) throw error;
                         if (result.modifiedCount == 0) {
-                            return res.send({ code: 500, message: `Post like not updated` });
+                            return res.status(500).send({ code: 500, message: `Post like not updated` });
                         }
                         db.collection("users").updateOne({username: like_by}, {
                             $push: {mylikes: ObjectId(id_post)}
@@ -220,20 +220,20 @@ module.exports = {
                             if (result.modifiedCount == 0) {
                                 return res.send({ code: 500, message: `User like not updated` });
                             }
-                            return res.send({ code: 200, message: `Liked` });
+                            return res.status(200).send({ code: 200, message: `Liked` });
                         });
                     });
                 });
             });
         } catch (error) {
-            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
+            return res.status(500).send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     },
 
     // [DELETE] Delete Permanently
     DeletePost: function (id_post, res) {
         if (!ObjectId.isValid(id_post))
-            return res.send({ code: 400, message: `Bad Request` });
+            return res.status(400).send({ code: 400, message: `Bad Request` });
         try {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
@@ -241,13 +241,13 @@ module.exports = {
                 posts.deleteOne({_id: ObjectId(id_post)}, (error, result) => {
                     if (error) throw error;
                     if (result.deletedCount == 0) {
-                        return res.send({ code: 500, message: `Delete post failed` });
+                        return res.status(500).send({ code: 500, message: `Delete post failed` });
                     }
-                    return res.send({ code: 200, message: `Post has deleted` });
+                    return res.status(200).send({ code: 200, message: `Post has deleted` });
                 });
             });
         } catch (error) {
-            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
+            return res.status(500).send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     }
 };

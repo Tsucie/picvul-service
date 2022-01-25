@@ -7,6 +7,8 @@ module.exports = {
     Login: function (req, res) {
         try {
             const { email, password } = req.body;
+            if (!email || !password)
+                return res.status(400).send({ code: 400, message: `Bad Request` });
             Authentication(email, password, (validation) => {
                 if (!validation.result) {
                     return res.status(401).send({code: 401, message: "Email or Password is wrong"});
@@ -50,9 +52,9 @@ module.exports = {
     Logout: function (req, res) {
         try {
             // res.clearCookie("access_token");
-            return res.send({ code: 200, message: "Successfully logged out 😏 🍀" });
+            return res.status(200).send({ code: 200, message: "Successfully logged out 😏 🍀" });
         } catch (error) {
-            return res.send({ code: 500, message: `Internal Server Error: ${error}` });
+            return res.status(500).send({ code: 500, message: `Internal Server Error: ${error}` });
         }
     }
 }
