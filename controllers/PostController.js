@@ -2,7 +2,6 @@ const posts = require("../models/posts");
 
 module.exports = {
     PostGetList: function (req, res) {
-        console.log(req.body);
         const { page, pageLength, filterByCategory, sortBy } = req.body;
         posts.ReadListPost(page, pageLength, filterByCategory, sortBy, res);
     },

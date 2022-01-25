@@ -51,17 +51,17 @@ module.exports = {
                     }
                     else {
                         let data = [];
-                        for (let i = 0; i < result.length; i++) {
+                        result.forEach(e => {
                             let ele = {
-                                id: result[i]._id,
-                                username: result[i].user[0].username,
-                                fullname: result[i].user[0].fullname,
-                                profil_img: result[i].user[0].profil_img,
-                                post_images: result[i].post_images,
-                                like_by: result[i].like_by
+                                id: e._id,
+                                username: e.user[0].username,
+                                fullname: e.user[0].fullname,
+                                profile_image: e.user[0].profile_image,
+                                post_images: e.post_images,
+                                like_by: e.like_by
                             };
                             data.push(ele);
-                        }
+                        });
                         return res.send({
                             code: 200,
                             message: `ReadList Successfully`,
