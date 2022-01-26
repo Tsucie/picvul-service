@@ -12,8 +12,8 @@ const follow = require("./controllers/FollowController");
 const comment = require("./controllers/CommentController");
 const categories = require("./controllers/CategoryController");
 // set up rate limiter: maximum of five requests per minute
-var RateLimit = require('express-rate-limit');
-var limiter = RateLimit.rateLimit({
+const RateLimit = require('express-rate-limit');
+const limiter = RateLimit.rateLimit({
     windowMs: 1*60*1000, // 1 minute
     max: 100, // Limit each IP to 100 requests per `window`
     standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers

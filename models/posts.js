@@ -34,9 +34,6 @@ module.exports = {
                 let skip = (page - 1) * pageLength;
                 posts.aggregate([
                     {$match: filter},
-                    {$sort: sort},
-                    {$limit: pageLength},
-                    {$skip: skip},
                     {$lookup:
                         {
                             from: 'users',
@@ -44,9 +41,13 @@ module.exports = {
                             foreignField: '_id',
                             as: 'user'
                         }
-                    }
+                    },
+                    {$skip: skip},
+                    {$limit: pageLength},
+                    {$sort: sort}
                 ]).toArray((error, result) => {
                     if (error) throw error;
+                    console.log(result);
                     if (result == null || result.length == 0) {
                         return res.status(404).send({ code: 404, message: `Not Found` });
                     }
@@ -127,23 +128,31 @@ module.exports = {
         try {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
-                const posts = db.collection(collectionName);
-                // Create the document
-                const doc = {
-                    id_user: ObjectId(id_user),
-                    categories: categories,
-                    title: title,
-                    desc: desc,
-                    post_images: post_images,
-                    like_by: [],
-                    likes: 0,
-                    post_time: dateTime.Now(),
-                    edited_time: "0"
-                };
-                posts.insertOne(doc).then(result => {
-                    return res.status(200).send({ code: 200, message: "Post successfully created" });
-                })
-                .catch(error => { throw error });
+                db.collection('users').findOne({_id: ObjectId(id_user)}, (err, result) => {
+                    if (error) throw error;
+                    if (result) {
+                        const posts = db.collection(collectionName);
+                        // Create the document
+                        const doc = {
+                            id_user: ObjectId(id_user),
+                            categories: categories,
+                            title: title,
+                            desc: desc,
+                            post_images: post_images,
+                            like_by: [],
+                            likes: 0,
+                            post_time: dateTime.Now(),
+                            edited_time: "0"
+                        };
+                        posts.insertOne(doc).then(result => {
+                            return res.status(200).send({ code: 200, message: "Post successfully created" });
+                        })
+                        .catch(error => { throw error });
+                    }
+                    else {
+                        return res.status(404).send({ code: 404, message: `User doesn't exists` });
+                    }
+                });
             });
         } catch (error) {
             return res.status(500).send({ code: 500, message: `Internal Server Error: ${error}` });
@@ -212,14 +221,14 @@ module.exports = {
                     }, (error, result) => {
                         if (error) throw error;
                         if (result.modifiedCount == 0) {
-                            return res.status(500).send({ code: 500, message: `Like failed` });
+                            return res.status(205).send({ code: 205, message: `Like failed` });
                         }
                         db.collection("users").updateOne({username: like_by}, {
                             $push: {mylikes: ObjectId(id_post)}
                         }, (error, result) => {
                             if (error) throw error;
                             if (result.modifiedCount == 0) {
-                                return res.status(500).send({ code: 500, message: `User like not updated` });
+                                return res.status(205).send({ code: 205, message: `User like not updated` });
                             }
                             return res.status(200).send({ code: 200, message: `Liked` });
                         });
@@ -250,14 +259,14 @@ module.exports = {
                     }, (error, result) => {
                         if (error) throw error;
                         if (result.modifiedCount == 0) {
-                            return res.status(500).send({ code: 500, message: `Unlike failed` });
+                            return res.status(205).send({ code: 205, message: `Unlike failed` });
                         }
                         db.collection("users").updateOne({username: unlike_by}, {
                             $pull: {mylikes: ObjectId(id_post)}
                         }, (error, result) => {
                             if (error) throw error;
                             if (result.modifiedCount == 0) {
-                                return res.send({ code: 500, message: `User unlike not updated` });
+                                return res.status(205).send({ code: 205, message: `User unlike not updated` });
                             }
                             return res.status(200).send({ code: 200, message: `Unliked` });
                         });

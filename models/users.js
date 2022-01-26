@@ -59,9 +59,9 @@ module.exports = {
                 let skip = (page - 1) * pageLength;
                 users.aggregate([
                     {$match: filter},
-                    {$sort: {fullname: 1}},
+                    {$skip: skip},
                     {$limit: pageLength},
-                    {$skip: skip}
+                    {$sort: {fullname: 1}}
                 ]).toArray((error, result) => {
                     if (error) throw error;
                     if (result) {
@@ -107,8 +107,8 @@ module.exports = {
                         }
                     },
                     {$match: {"post": {$ne: []}}},
-                    {$limit: pageLength},
-                    {$skip: skip}
+                    {$skip: skip},
+                    {$limit: pageLength}
                 ]).toArray((error, result) => {
                     if (error) throw error;
                     if (result) {
