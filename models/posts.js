@@ -19,8 +19,9 @@ module.exports = {
                 const posts = db.collection(collectionName);
                 // filtering
                 let filter = {};
-                if (filterByCategory)
-                    filter = {categories: filterByCategory};
+                if (Array.isArray(filterByCategory) && filterByCategory.length > 0) {
+                    filter = {categories: { $in: filterByCategory}}
+                }
                 // sorting
                 let sort = {};
                 if (sortBy) {
@@ -96,7 +97,7 @@ module.exports = {
                 ]).toArray((error, result) => {
                     if (error) throw error;
                     if (result == null || result.length == 0) {
-                        return res.send({ code: 404, message: `Post doesn't exists` });
+                        return res.status(404).send({ code: 404, message: `Post doesn't exists` });
                     }
                     else {
                         // unset properties
@@ -192,7 +193,7 @@ module.exports = {
         }
     },
 
-    // [PUT/PATCH] Plus Like
+    // [PUT/PATCH] Like
     EditLikePost: function (id_post, like_by, res) {
         if (!ObjectId.isValid(id_post) || !like_by)
             return res.status(400).send({ code: 400, message: `Bad Request` });
@@ -203,7 +204,7 @@ module.exports = {
                 posts.findOne({_id: ObjectId(id_post)}, (error, result) => {
                     if (error) throw error;
                     if (result == null) {
-                        return res.status(400).status(400).send({ code: 400, message: `Bad Request` });
+                        return res.status(400).send({ code: 400, message: `Bad Request` });
                     }
                     posts.updateOne({_id: ObjectId(id_post)}, {
                         $push: {like_by: like_by},
@@ -211,16 +212,54 @@ module.exports = {
                     }, (error, result) => {
                         if (error) throw error;
                         if (result.modifiedCount == 0) {
-                            return res.status(500).send({ code: 500, message: `Post like not updated` });
+                            return res.status(500).send({ code: 500, message: `Like failed` });
                         }
                         db.collection("users").updateOne({username: like_by}, {
                             $push: {mylikes: ObjectId(id_post)}
                         }, (error, result) => {
                             if (error) throw error;
                             if (result.modifiedCount == 0) {
-                                return res.send({ code: 500, message: `User like not updated` });
+                                return res.status(500).send({ code: 500, message: `User like not updated` });
                             }
                             return res.status(200).send({ code: 200, message: `Liked` });
+                        });
+                    });
+                });
+            });
+        } catch (error) {
+            return res.status(500).send({ code: 500, message: `Internal Server Error: ${error}` });
+        }
+    },
+
+    // [PUT/PATCH] Unlike
+    EditUnlikePost: function (id_post, unlike_by, res) {
+        if (!ObjectId.isValid(id_post) || !unlike_by)
+            return res.status(400).send({ code: 400, message: `Bad Request` });
+        try {
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                const posts = db.collection(collectionName);
+                posts.findOne({_id: ObjectId(id_post)}, (error, result) => {
+                    if (error) throw error;
+                    if (result == null) {
+                        return res.status(400).send({ code: 400, message: `Bad Request` });
+                    }
+                    posts.updateOne({_id: ObjectId(id_post)}, {
+                        $pull: {like_by: unlike_by},
+                        $inc: {likes: -1}
+                    }, (error, result) => {
+                        if (error) throw error;
+                        if (result.modifiedCount == 0) {
+                            return res.status(500).send({ code: 500, message: `Unlike failed` });
+                        }
+                        db.collection("users").updateOne({username: unlike_by}, {
+                            $pull: {mylikes: ObjectId(id_post)}
+                        }, (error, result) => {
+                            if (error) throw error;
+                            if (result.modifiedCount == 0) {
+                                return res.send({ code: 500, message: `User unlike not updated` });
+                            }
+                            return res.status(200).send({ code: 200, message: `Unliked` });
                         });
                     });
                 });

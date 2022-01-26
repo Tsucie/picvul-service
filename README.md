@@ -31,7 +31,7 @@ BackEnd Service for picvul app
 ### Users
 |Feature         |Method          |uri                            |Requirement Parameter        |Description
 |----------------|----------------|-------------------------------|-----------------------------|-----------
-| Regist | `POST` | `/api/user/regist` | body **json**: `{email:string, username:string, fullname:string, password:string, job:string, profile_image:stringpath}` | Create user account
+| Regist | `POST` | `/regist` | body **json**: `{email:string, username:string, fullname:string, password:string, job:string, profile_image:stringpath}` | Create user account
 | Login | `POST` | `/login` | body **json**: `{email:string, password:string}` | Login user account
 | Logout | `GET` | `/logout` | header **Bearer Token**: `generated jwt token from login` | Logout user account
 | GetList | `POST` | `/api/user/getlist` | header **Bearer Token** & body **json**: `{filterByJob:string, page:number, pageLength:number}` | Get Paginated List of user account

@@ -215,8 +215,7 @@ module.exports = {
                                     if (result.insertedId) {
                                         return res.status(200).send({
                                             code: 200,
-                                            message: "Account successfully created",
-                                            id_user: result.insertedId
+                                            message: "Account successfully created"
                                         });
                                     }
                                 });
@@ -243,7 +242,7 @@ module.exports = {
                     if (result == null || result.length == 0) {
                         return res.status(400).send({ code: 400, message: `Bad Request` });
                     }
-                    if (!email) email = result.email;
+                    if (!email) email = result.email; // What if user input anotner registered user email?
                     if (!username) username = result.username;
                     if (!fullname) fullname = result.fullname;
                     if (!job) job = result.job;
@@ -352,7 +351,7 @@ module.exports = {
                                         if (err) throw err;
                                         return res.status(200).send({
                                             code: 200,
-                                            message: `Email sent: ${info.response}`
+                                            message: `Email sent to ${email}. Please check your inbox or spam.`
                                         });
                                     });
                                 }

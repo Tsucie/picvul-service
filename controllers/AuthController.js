@@ -10,12 +10,10 @@ module.exports = {
             if (!email || !password)
                 return res.status(400).send({ code: 400, message: `Bad Request` });
             Authentication(email, password, (validation) => {
-                if (!validation.result) {
+                if (validation.result == false || validation.user.status == false) {
                     return res.status(401).send({code: 401, message: "Email or Password is wrong"});
                 }
                 else {
-                    if (validation.user.status == false)
-                        return res.status(401).send({code: 401, message: "Account has deactivated"});
                     // Create and assign token
                     let payload = { id: validation.user.id_user, name: validation.user.fullname };
                     const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
@@ -23,8 +21,6 @@ module.exports = {
                         code: 200,
                         message: "Login Successfully 😏 🍀",
                         access_token: token,
-                        httpOnly: true,
-                        secure: process.env.APP_ENV === "production",
                         data: validation.user
                     });
                 }
