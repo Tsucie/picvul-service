@@ -242,25 +242,42 @@ module.exports = {
                     if (result == null || result.length == 0) {
                         return res.status(400).send({ code: 400, message: `Bad Request` });
                     }
-                    if (!email) email = result.email; // What if user input anotner registered user email?
+                    if (!email) email = result.email;
                     if (!username) username = result.username;
                     if (!fullname) fullname = result.fullname;
                     if (!job) job = result.job;
                     if (!profile_image) profile_image = result.profile_image;
                     
-                    let doc = {
-                        email: email,
-                        username: username,
-                        fullname: fullname,
-                        job: job,
-                        profile_image: profile_image
-                    };
-                    users.updateOne({_id: ObjectId(id_user)}, {$set: doc}, (error, result) => {
-                        if (error) throw error;
-                        if (result.modifiedCount == 0) {
-                            return res.status(500).send({ code: 500, message: `Update account data failed` });
+                    // Check if user is input another registered user email
+                    users.findOne({email: email}, (err, existEmail) => {
+                        if (err) throw err;
+                        if (existEmail != null && existEmail._id.toString() !== result._id.toString()) {
+                            return res.status(406).send({ code: 406, message: "Email has taken, try another email" });
                         }
-                        return res.status(200).send({ code: 200, message: `Account data has updated` });
+                        else {
+                            users.findOne({username: username}, (err, existUsername) => {
+                                if (err) throw err;
+                                if (existUsername != null && existUsername._id.toString() !== result._id.toString()) {
+                                    return res.status(406).send({ code: 406, message: "Username has taken, try another username" });
+                                }
+                                else {
+                                    let doc = {
+                                        email: email,
+                                        username: username,
+                                        fullname: fullname,
+                                        job: job,
+                                        profile_image: profile_image
+                                    };
+                                    users.updateOne({_id: ObjectId(id_user)}, {$set: doc}, (error, result) => {
+                                        if (error) throw error;
+                                        if (result.modifiedCount == 0) {
+                                            return res.status(500).send({ code: 500, message: `Update account data failed` });
+                                        }
+                                        return res.status(200).send({ code: 200, message: `Account data has updated` });
+                                    });
+                                }
+                            });
+                        }
                     });
                 });
             });
