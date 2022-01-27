@@ -98,12 +98,18 @@ module.exports = {
                 //pagination
                 let skip = (page - 1) * pageLength;
                 users.aggregate([
-                    {$lookup:
+                    {$lookup: // Join Collection
                         {
-                            from: 'posts',
-                            localField: '_id',
-                            foreignField: 'id_user',
-                            as: 'post'
+                            from: 'posts', // Target Collection
+                            let: { local_id: '$_id' }, // Local field matched with fk in posts
+                            as: 'post', // alias
+                            pipeline: [
+                                {$match: { // Match the fk field in posts to local field in users
+                                    $expr: {$eq: ['$id_user', '$$local_id']}
+                                }},
+                                {$sort: {post_time: -1}}, // sort by latest
+                                {$limit: 3} // limit to max 3 posts
+                            ]
                         }
                     },
                     {$match: {"post": {$ne: []}}},

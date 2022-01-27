@@ -47,7 +47,6 @@ module.exports = {
                     {$sort: sort}
                 ]).toArray((error, result) => {
                     if (error) throw error;
-                    console.log(result);
                     if (result == null || result.length == 0) {
                         return res.status(404).send({ code: 404, message: `Not Found` });
                     }
