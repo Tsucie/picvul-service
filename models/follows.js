@@ -28,7 +28,16 @@ function readList(readContext, id_user, page, pageLength, func) {
                 }
             }
         ]).toArray((error, result) => {
-            func(error, result);
+            let data = [];
+            for (let i = 0; i < result.length; i++) {
+                // unset properties
+                delete result[i].user[0].password;
+                delete result[i].user[0].followings;
+                delete result[i].user[0].followers;
+                delete result[i].user[0].mylikes;
+                data.push(result[i].user[0]);
+            }
+            func(error, data);
         });
     });
 }
@@ -156,17 +165,25 @@ module.exports = {
                     following_id_user: objIdFollowing,
                     follower_id_user: objIdFollower
                 };
-                follows.insertOne(doc).then(() => {
-                    const users = db.collection("users");
-                    users.updateOne({_id: objIdFollowing}, {$inc: {followers: 1}}, (err) => {
-                        if (err) throw err;
-                        users.updateOne({_id: objIdFollower}, {$inc: {followings: 1}}, (err) => {
-                            if (err) throw err;
-                            return res.status(200).send({ code: 200, message: "User followed" });
-                        });
-                    });
-                })
-                .catch(error => { throw error });
+                follows.findOne(doc, (err, check) => {
+                    if (err) throw err;
+                    if (check != null) {
+                        return res.status(205).send({ code: 205, message: "Already followed" });
+                    }
+                    else {
+                        follows.insertOne(doc).then(() => {
+                            const users = db.collection("users");
+                            users.updateOne({_id: objIdFollowing}, {$inc: {followers: 1}}, (err) => {
+                                if (err) throw err;
+                                users.updateOne({_id: objIdFollower}, {$inc: {followings: 1}}, (err) => {
+                                    if (err) throw err;
+                                    return res.status(200).send({ code: 200, message: "User followed" });
+                                });
+                            });
+                        })
+                        .catch(error => { throw error });
+                    }
+                });
             });
         } catch (error) {
             return res.status(500).send({ code: 500, message: `Internal Server Error: ${error}` });
@@ -190,16 +207,18 @@ module.exports = {
                 (error, result) => {
                     if (error) throw error;
                     if (result.deletedCount == 0) {
-                        return res.status(500).send({ code: 500, message: `Unfollow failed` });
+                        return res.status(205).send({ code: 205, message: `Already unfollowed` });
                     }
-                    const users = db.collection("users");
-                    users.updateOne({_id: objIdFollowing}, {$inc: {followers: -1}}, (err) => {
-                        if (err) throw err;
-                        users.updateOne({_id: objIdFollower}, {$inc: {followings: -1}}, (err) => {
+                    else {
+                        const users = db.collection("users");
+                        users.updateOne({_id: objIdFollowing}, {$inc: {followers: -1}}, (err) => {
                             if (err) throw err;
-                            return res.status(200).send({ code: 200, message: `User unfollowed` });
+                            users.updateOne({_id: objIdFollower}, {$inc: {followings: -1}}, (err) => {
+                                if (err) throw err;
+                                return res.status(200).send({ code: 200, message: `User unfollowed` });
+                            });
                         });
-                    });
+                    }
                 });
             });
         } catch (error) {

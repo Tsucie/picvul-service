@@ -27,7 +27,7 @@ module.exports = {
                 if (sortBy) {
                     if (sortBy === "Popular") sort = {likes: -1};
                     if (sortBy === "Latest") sort = {post_time: -1};
-                    if (sortBy === "Date") sort = {post_time: -1};
+                    if (sortBy === "Trending") sort = {post_time: -1};
                     if (sortBy === "Related") sort = {likes: -1, post_time: 1};
                 }
                 // pagination
@@ -42,9 +42,9 @@ module.exports = {
                             as: 'user'
                         }
                     },
+                    {$sort: sort},
                     {$skip: skip},
-                    {$limit: pageLength},
-                    {$sort: sort}
+                    {$limit: pageLength}
                 ]).toArray((error, result) => {
                     if (error) throw error;
                     if (result == null || result.length == 0) {
@@ -59,7 +59,8 @@ module.exports = {
                                 fullname: e.user[0].fullname,
                                 profile_image: e.user[0].profile_image,
                                 post_images: e.post_images,
-                                like_by: e.like_by
+                                like_by: e.like_by,
+                                post_time: e.post_time
                             };
                             data.push(ele);
                         });
@@ -67,6 +68,64 @@ module.exports = {
                             code: 200,
                             message: `ReadList Successfully`,
                             post: data
+                        });
+                    }
+                });
+            });
+        } catch (error) {
+            return res.status(500).send({ code: 500, message: `Internal Server Error: ${error}` });
+        }
+    },
+
+    // [GET] ReadAllUserLikes
+    ReadAllUserLikes: function (id_user, res) {
+        if (!ObjectId.isValid(id_user))
+            return res.status(400).send({ code: 400, message: `Bad Request` });
+        try {
+            _conn.dbContext((error, db) => {
+                if (error) throw error;
+                db.collection("users").findOne({_id: ObjectId(id_user)}, (err, user) => {
+                    if (err) throw err;
+                    if (user == null) {
+                        return res.status(404).send({ code: 404, message: `Not Found` });
+                    }
+                    else {
+                        db.collection(collectionName).aggregate([
+                            {$match: {_id: {$in: user.mylikes}}},
+                            {$lookup:
+                                {
+                                    from: 'users',
+                                    localField: 'id_user',
+                                    foreignField: '_id',
+                                    as: 'user'
+                                }
+                            }
+                        ])
+                        .toArray((ero, result) => {
+                            if (ero) throw ero;
+                            if (result == null && result.length == 0) {
+                                return res.status(404).send({ code: 404, message: `Not Found` });
+                            }
+                            else {
+                                let data = [];
+                                result.forEach(e => {
+                                    let ele = {
+                                        id: e._id,
+                                        username: e.user[0].username,
+                                        fullname: e.user[0].fullname,
+                                        profile_image: e.user[0].profile_image,
+                                        post_images: e.post_images,
+                                        like_by: e.like_by,
+                                        post_time: e.post_time
+                                    };
+                                    data.push(ele);
+                                });
+                                return res.status(200).send({
+                                    code: 200,
+                                    message: `ReadList Successfully`,
+                                    post: data
+                                });
+                            }
                         });
                     }
                 });
@@ -209,29 +268,41 @@ module.exports = {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
                 const posts = db.collection(collectionName);
+                const users = db.collection("users");
                 posts.findOne({_id: ObjectId(id_post)}, (error, result) => {
                     if (error) throw error;
                     if (result == null) {
                         return res.status(400).send({ code: 400, message: `Bad Request` });
                     }
-                    posts.updateOne({_id: ObjectId(id_post)}, {
-                        $push: {like_by: like_by},
-                        $inc: {likes: 1}
-                    }, (error, result) => {
-                        if (error) throw error;
-                        if (result.modifiedCount == 0) {
-                            return res.status(205).send({ code: 205, message: `Like failed` });
-                        }
-                        db.collection("users").updateOne({username: like_by}, {
-                            $push: {mylikes: ObjectId(id_post)}
-                        }, (error, result) => {
-                            if (error) throw error;
-                            if (result.modifiedCount == 0) {
-                                return res.status(205).send({ code: 205, message: `User like not updated` });
+                    else {
+                        // Check if user already liked
+                        users.findOne({username: like_by, mylikes: [ObjectId(id_post)]}, (err, check) => {
+                            if (err) throw err;
+                            if (check != null) {
+                                return res.status(205).send({ code: 205, message: "Already liked" });
                             }
-                            return res.status(200).send({ code: 200, message: `Liked` });
+                            else {
+                                posts.updateOne({_id: ObjectId(id_post)}, {
+                                    $push: {like_by: like_by},
+                                    $inc: {likes: 1}
+                                }, (error, result) => {
+                                    if (error) throw error;
+                                    if (result.modifiedCount == 0) {
+                                        return res.status(205).send({ code: 205, message: `Like failed` });
+                                    }
+                                    users.updateOne({username: like_by}, {
+                                        $push: {mylikes: ObjectId(id_post)}
+                                    }, (error, result) => {
+                                        if (error) throw error;
+                                        if (result.modifiedCount == 0) {
+                                            return res.status(205).send({ code: 205, message: `User like not updated` });
+                                        }
+                                        return res.status(200).send({ code: 200, message: `Liked` });
+                                    });
+                                });
+                            }
                         });
-                    });
+                    }
                 });
             });
         } catch (error) {
@@ -247,29 +318,41 @@ module.exports = {
             _conn.dbContext((error, db) => {
                 if (error) throw error;
                 const posts = db.collection(collectionName);
+                const users = db.collection("users");
                 posts.findOne({_id: ObjectId(id_post)}, (error, result) => {
                     if (error) throw error;
                     if (result == null) {
                         return res.status(400).send({ code: 400, message: `Bad Request` });
                     }
-                    posts.updateOne({_id: ObjectId(id_post)}, {
-                        $pull: {like_by: unlike_by},
-                        $inc: {likes: -1}
-                    }, (error, result) => {
-                        if (error) throw error;
-                        if (result.modifiedCount == 0) {
-                            return res.status(205).send({ code: 205, message: `Unlike failed` });
-                        }
-                        db.collection("users").updateOne({username: unlike_by}, {
-                            $pull: {mylikes: ObjectId(id_post)}
-                        }, (error, result) => {
-                            if (error) throw error;
-                            if (result.modifiedCount == 0) {
-                                return res.status(205).send({ code: 205, message: `User unlike not updated` });
+                    else {
+                        // Check if user liked the post
+                        users.findOne({username: unlike_by, mylikes: [ObjectId(id_post)]}, (err, check) => {
+                            if (err) throw err;
+                            if (check == null) {
+                                return res.status(205).send({ code: 205, message: "Already unliked" });
                             }
-                            return res.status(200).send({ code: 200, message: `Unliked` });
+                            else {
+                                posts.updateOne({_id: ObjectId(id_post)}, {
+                                    $pull: {like_by: unlike_by},
+                                    $inc: {likes: -1}
+                                }, (error, result) => {
+                                    if (error) throw error;
+                                    if (result.modifiedCount == 0) {
+                                        return res.status(205).send({ code: 205, message: `Unlike failed` });
+                                    }
+                                    db.collection("users").updateOne({username: unlike_by}, {
+                                        $pull: {mylikes: ObjectId(id_post)}
+                                    }, (error, result) => {
+                                        if (error) throw error;
+                                        if (result.modifiedCount == 0) {
+                                            return res.status(205).send({ code: 205, message: `User unlike not updated` });
+                                        }
+                                        return res.status(200).send({ code: 200, message: `Unliked` });
+                                    });
+                                });
+                            }
                         });
-                    });
+                    }
                 });
             });
         } catch (error) {

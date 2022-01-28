@@ -5,6 +5,10 @@ module.exports = {
         const { page, pageLength, filterByCategory, sortBy } = req.body;
         posts.ReadListPost(page, pageLength, filterByCategory, sortBy, res);
     },
+    PostGetUserLikes: function (req, res) {
+        const { id_user } = req.params;
+        posts.ReadAllUserLikes(id_user, res);
+    },
     PostGetByID: function (req, res) {
         const { id_post } = req.params;
         posts.ReadByIDPost(id_post, res);

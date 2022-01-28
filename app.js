@@ -43,6 +43,7 @@ app.delete("/api/user/delete/:id_user", auth.Authorization, user.UserDeleteAccou
 app.post("/api/user/updates", auth.Authorization, user.UserGetUpdates);
 // Posts Module
 app.post("/api/post/get-list", auth.Authorization, post.PostGetList);
+app.get("/api/post/userlikes/:id_user", auth.Authorization, post.PostGetUserLikes);
 app.get("/api/post/:id_post", auth.Authorization, post.PostGetByID);
 app.post("/api/post/upload", auth.Authorization, post.PostCreate);
 app.put("/api/post/edit", auth.Authorization, post.PostEdit);
