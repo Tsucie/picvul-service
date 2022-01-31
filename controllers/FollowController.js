@@ -16,11 +16,11 @@ module.exports = {
         });
     },
     UserFollow: function (req, res) {
-        const { following_id_user, follower_id_user } = req.body;
-        follows.AddFollows(following_id_user, follower_id_user, res);
+        const { following, follower } = req.body;
+        follows.AddFollows(following, follower, res);
     },
     UserUnfollow: function (req, res) {
-        const { following_id_user, follower_id_user } = req.body;
-        follows.DeleteFollows(following_id_user, follower_id_user, res);
+        const { following, follower } = req.body;
+        follows.DeleteFollows(following, follower, res);
     }
 }

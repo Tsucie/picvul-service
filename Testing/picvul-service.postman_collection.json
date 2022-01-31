@@ -6,307 +6,8 @@
 	},
 	"item": [
 		{
-			"name": "Users",
+			"name": "Auth",
 			"item": [
-				{
-					"name": "UserRegist",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"rizkyadji21@gmail.com\",\r\n    \"username\": \"Tsucie\",\r\n    \"fullname\":\"Tsucie Kun\",\r\n    \"password\": \"password\",\r\n    \"job\": \"Gimmic\",\r\n    \"profile_image\": \"/cdn/public/tsucie.webp\"\r\n}"
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/user/regist",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"user",
-								"regist"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "UserGetList",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiWmlrcmkgTWFuc3l1cnN5YWgiLCJpYXQiOjE2NDIyNTM3NTN9.WKfA1VRyqhmji95RIGggFyTkeF1KaXt1AJNq7Goxi3k",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"filterByJob\": \"\",\r\n    \"page\": 1,\r\n    \"pageLength\": 10\r\n}"
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/user/getlist",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"user",
-								"getlist"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "UserUpdates",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDI1NjAyOTR9.Nj3Chxq_80BWZ8fvjV2WvkHmSrtCy3QXtUGjKkTB0Ys",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"page\": 1,\r\n    \"pageLength\": 5\r\n}"
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/updates",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"updates"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "UserGetByID",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDY3NzcyMTU5OTA3MzU1MSwibmFtZSI6IkF5YW5va29qaTIiLCJpYXQiOjE2NDIxNzg3MzF9._72XD6eMDoWgJvthoBTVDwS2fcB2Y4npuzaw13h5gng",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:5000/api/user/61ed27db309bbdc8e95c4462",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"user",
-								"61ed27db309bbdc8e95c4462"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "UserEditData",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiWmlrcmkgTWFuc3l1cnN5YWgiLCJpYXQiOjE2NDIyNTM3NTN9.WKfA1VRyqhmji95RIGggFyTkeF1KaXt1AJNq7Goxi3k",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id_user\": \"61ed27db309bbdc8e95c4462\",\r\n    \"fullname\": \"Rizky Adji Pangestu\"\r\n}"
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/user/editdata",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"user",
-								"editdata"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "UserEditPassword",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiWmlrcmkgTWFuc3l1cnN5YWgiLCJpYXQiOjE2NDIyNTM3NTN9.WKfA1VRyqhmji95RIGggFyTkeF1KaXt1AJNq7Goxi3k",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id_user\": \"61ed27db309bbdc8e95c4462\",\r\n    \"oldPassword\": \"password\",\r\n    \"newPassword\": \"kiki082110\"\r\n}"
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/user/editpassword",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"user",
-								"editpassword"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "ResetPassword",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"rizkyadji21@gmail.com\"\r\n}"
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/user/resetpassword",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"user",
-								"resetpassword"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "UserDelete",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQWRqaSBQYW5nZXN0dSIsImlhdCI6MTY0MjI1NDY2OX0.2XDmsan_wKzYMtus-VQacvY-Ia6RApAXM1sT3bQoaBs",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:5000/api/user/61ed27db309bbdc8e95c4462",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"user",
-								"61ed27db309bbdc8e95c4462"
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "Login",
 					"request": {
@@ -320,7 +21,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"rizkyadji21@gmail.com\",\r\n    \"password\": \"9l9h8qqr\"\r\n}"
+							"raw": "{\r\n    \"email\": \"rizkyadji21@gmail.com\",\r\n    \"password\": \"brtnxvc4\"\r\n}"
 						},
 						"url": {
 							"raw": "http://localhost:5000/login",
@@ -370,6 +71,308 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "UserRegist",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"elshafira123@gmail.com\",\r\n    \"username\": \"elshafira\",\r\n    \"fullname\": \"El Shafira Rain\",\r\n    \"password\": \"password\",\r\n    \"job\": \"Illustrator\",\r\n    \"profile_image\": \"/default-profile.webp\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/regist",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"regist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ForgotPassword",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"rizkyadji21@gmail.com\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/reset-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "UserGetList",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiWmlrcmkgTWFuc3l1cnN5YWgiLCJpYXQiOjE2NDIyNTM3NTN9.WKfA1VRyqhmji95RIGggFyTkeF1KaXt1AJNq7Goxi3k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"filterByJob\": \"\",\r\n    \"page\": 1,\r\n    \"pageLength\": 10\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/user/get-list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user",
+								"get-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UserUpdates",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDI1NjAyOTR9.Nj3Chxq_80BWZ8fvjV2WvkHmSrtCy3QXtUGjKkTB0Ys",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\": 1,\r\n    \"pageLength\": 5\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/user/updates",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user",
+								"updates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UserGetByID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDY3NzcyMTU5OTA3MzU1MSwibmFtZSI6IkF5YW5va29qaTIiLCJpYXQiOjE2NDIxNzg3MzF9._72XD6eMDoWgJvthoBTVDwS2fcB2Y4npuzaw13h5gng",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/user/61ed5cf03758a49fbdd21ebb",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user",
+								"61ed5cf03758a49fbdd21ebb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UserEditPassword",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiWmlrcmkgTWFuc3l1cnN5YWgiLCJpYXQiOjE2NDIyNTM3NTN9.WKfA1VRyqhmji95RIGggFyTkeF1KaXt1AJNq7Goxi3k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_user\": \"61ed27db309bbdc8e95c4462\",\r\n    \"oldPassword\": \"password\",\r\n    \"newPassword\": \"kiki082110\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/user/edit-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user",
+								"edit-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UserEditData",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiWmlrcmkgTWFuc3l1cnN5YWgiLCJpYXQiOjE2NDIyNTM3NTN9.WKfA1VRyqhmji95RIGggFyTkeF1KaXt1AJNq7Goxi3k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_user\": \"61f1057be8d09c67c304ad50\",\r\n    \"fullname\": \"Adji Pangestu\",\r\n    \"job\": \"Backend Developer\",\r\n    \"profile_image\": \"/default-profile.webp\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/user/edit-data",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user",
+								"edit-data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UserDelete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQWRqaSBQYW5nZXN0dSIsImlhdCI6MTY0MjI1NDY2OX0.2XDmsan_wKzYMtus-VQacvY-Ia6RApAXM1sT3bQoaBs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/user/delete/61f0048294ce2a7b0f0618fe",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user",
+								"delete",
+								"61f0048294ce2a7b0f0618fe"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -399,10 +402,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"page\": 1,\r\n    \"pageLength\": 12,\r\n    \"filterByCategory\": \"\",\r\n    \"sortBy\": \"Popular\"\r\n}"
+							"raw": "{\r\n    \"page\": 2,\r\n    \"pageLength\": 15,\r\n    \"filterByCategory\": [],\r\n    \"sortBy\": \"Latest\"\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/post/getlist",
+							"raw": "http://localhost:5000/api/post/get-list",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -411,7 +414,7 @@
 							"path": [
 								"api",
 								"post",
-								"getlist"
+								"get-list"
 							]
 						}
 					},
@@ -439,7 +442,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:5000/api/post/61ecf730ef298e8943f21d6c",
+							"raw": "http://localhost:5000/api/post/61f3e912e28d3eaa25fc97c0",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -448,7 +451,45 @@
 							"path": [
 								"api",
 								"post",
-								"61ecf730ef298e8943f21d6c"
+								"61f3e912e28d3eaa25fc97c0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetLikes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDI2NTg1OTJ9._6CgV8d15IdfkmIuxq2SCg5GlcrznAxUAGHO9rnG2I0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/post/userlikes/61ed5cf03758a49fbdd21ebb",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"post",
+								"userlikes",
+								"61ed5cf03758a49fbdd21ebb"
 							]
 						}
 					},
@@ -477,7 +518,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id_user\": \"61e30767a675626a1f46f569\",\r\n    \"categories\": [\"Illustration\"],\r\n    \"title\": \"The Table\",\r\n    \"desc\": \"lorem ipsum dolor sit amet.\",\r\n    \"post_images\": [\r\n        {\r\n            \"idx\": 0,\r\n            \"path\": \"/cdn/public/pic1.webp\"\r\n        },\r\n        {\r\n            \"idx\": 1,\r\n            \"path\": \"/cdn/public/pic2.webp\"\r\n        },\r\n        {\r\n            \"idx\": 3,\r\n            \"path\": \"/cdn/public/pic3.webp\"\r\n        },\r\n        {\r\n            \"idx\": 4,\r\n            \"path\": \"/cdn/public/pic4.webp\"\r\n        }\r\n    ]\r\n}"
+							"raw": "{\r\n    \"id_user\": \"61ed5cf03758a49fbdd21ebb\",\r\n    \"categories\": [\"NFT\"],\r\n    \"title\": \"NFT\",\r\n    \"desc\": \"lorem ipsum dolor sit amet.\",\r\n    \"post_images\": [\r\n        {\r\n            \"idx\": 0,\r\n            \"path\": \"https://firebasestorage.googleapis.com/v0/b/picvul.appspot.com/o/josh-sorenson-NrbmkGUTRcU-unsplash.jpg?alt=media&token=f9955cd6-1e96-48ec-b5f9-29d58e3e6028\"\r\n        }\r\n    ]\r\n}"
 						},
 						"url": {
 							"raw": "http://localhost:5000/api/post/upload",
@@ -549,7 +590,7 @@
 								}
 							]
 						},
-						"method": "PUT",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -559,7 +600,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id_post\": \"61e43ebefe59e7317ae8bdd6\",\r\n    \"like_by\": \"zikri\"\r\n}"
+							"raw": "{\r\n    \"id_post\": \"61eedb7474b5cf23149657d9\",\r\n    \"like_by\": \"Tsucie\"\r\n}"
 						},
 						"url": {
 							"raw": "http://localhost:5000/api/post/like",
@@ -572,6 +613,47 @@
 								"api",
 								"post",
 								"like"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UnLike",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRHppa3JpIE1hbnN5dXJzeWFoIEFtaW4iLCJpYXQiOjE2NDI2NTg1OTJ9._6CgV8d15IdfkmIuxq2SCg5GlcrznAxUAGHO9rnG2I0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_post\": \"61ecff4f5b5838354462037d\",\r\n    \"unlike_by\": \"adji_png\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/post/unlike",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"post",
+								"unlike"
 							]
 						}
 					},
@@ -599,7 +681,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:5000/api/post/61ecf730ef298e8943f21d6c",
+							"raw": "http://localhost:5000/api/post/delete/61ecf730ef298e8943f21d6c",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -608,6 +690,7 @@
 							"path": [
 								"api",
 								"post",
+								"delete",
 								"61ecf730ef298e8943f21d6c"
 							]
 						}
@@ -621,9 +704,6 @@
 			"item": [
 				{
 					"name": "GetFollows",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -643,12 +723,8 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id_user\": \"61e2a4fc05e8eacac6c14b92\"\r\n}"
-						},
 						"url": {
-							"raw": "http://localhost:5000/api/follows",
+							"raw": "http://localhost:5000/api/follows/61f4b2e7c48b941bfa46c310",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -656,7 +732,8 @@
 							"port": "5000",
 							"path": [
 								"api",
-								"follows"
+								"follows",
+								"61f4b2e7c48b941bfa46c310"
 							]
 						}
 					},
@@ -664,9 +741,6 @@
 				},
 				{
 					"name": "GetListFollowing",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -678,7 +752,7 @@
 								}
 							]
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -688,10 +762,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"follower_id_user\": \"61e2a4fc05e8eacac6c14b92\",\r\n    \"page\": 1,\r\n    \"pageLength\": 15\r\n}"
+							"raw": "{\r\n    \"follower_id_user\": \"61f1057be8d09c67c304ad50\",\r\n    \"page\": 1,\r\n    \"pageLength\": 15\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/getlistfollowing",
+							"raw": "http://localhost:5000/api/get-list-following",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -699,7 +773,7 @@
 							"port": "5000",
 							"path": [
 								"api",
-								"getlistfollowing"
+								"get-list-following"
 							]
 						}
 					},
@@ -707,9 +781,6 @@
 				},
 				{
 					"name": "GetListFollower",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -721,7 +792,7 @@
 								}
 							]
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -731,10 +802,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"following_id_user\": \"61e2a4fc05e8eacac6c14b92\",\r\n    \"page\": 1,\r\n    \"pageLength\": 15\r\n}"
+							"raw": "{\r\n    \"following_id_user\": \"61f4b2e7c48b941bfa46c310\",\r\n    \"page\": 1,\r\n    \"pageLength\": 15\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/getlistfollower",
+							"raw": "http://localhost:5000/api/get-list-follower",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -742,14 +813,14 @@
 							"port": "5000",
 							"path": [
 								"api",
-								"getlistfollower"
+								"get-list-follower"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "AddFollow",
+					"name": "Follow",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -771,10 +842,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"follower_id_user\": \"61e3073fa675626a1f46f568\",\r\n    \"following_id_user\": \"61e2a4fc05e8eacac6c14b92\"\r\n}"
+							"raw": "{\r\n    \"follower\": \"adji_png8637\",\r\n    \"following\": \"Dienulhaq\"\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/addfollow",
+							"raw": "http://localhost:5000/api/follow",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -782,7 +853,7 @@
 							"port": "5000",
 							"path": [
 								"api",
-								"addfollow"
+								"follow"
 							]
 						}
 					},
@@ -811,7 +882,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"follower_id_user\": \"61e3073fa675626a1f46f568\",\r\n    \"following_id_user\": \"61e2a4fc05e8eacac6c14b92\"\r\n}"
+							"raw": "{\r\n    \"follower\": \"adji_png8637\",\r\n    \"following\": \"Dienulhaq\"\r\n}"
 						},
 						"url": {
 							"raw": "http://localhost:5000/api/unfollow",
@@ -859,7 +930,7 @@
 							"raw": "{\r\n    \"id_post\": \"61e43f02fe59e7317ae8bdd8\",\r\n    \"page\": 1,\r\n    \"pageLength\": 5\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/comment/getlist",
+							"raw": "http://localhost:5000/api/comment/get-list",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -868,7 +939,7 @@
 							"path": [
 								"api",
 								"comment",
-								"getlist"
+								"get-list"
 							]
 						}
 					},
@@ -1056,7 +1127,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:5000/api/comment/61e4f95c71840b0fa1a31ade",
+							"raw": "http://localhost:5000/api/comment/delete/61e4f95c71840b0fa1a31ade",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1065,6 +1136,7 @@
 							"path": [
 								"api",
 								"comment",
+								"delete",
 								"61e4f95c71840b0fa1a31ade"
 							]
 						}
@@ -1098,7 +1170,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:5000/api/category/getlist",
+							"raw": "http://localhost:5000/api/category/get-list",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1107,7 +1179,7 @@
 							"path": [
 								"api",
 								"category",
-								"getlist"
+								"get-list"
 							]
 						}
 					},
@@ -1254,7 +1326,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:5000/api/category/61e8f7133d1846cf34a19529",
+							"raw": "http://localhost:5000/api/category/delete/61e8f7133d1846cf34a19529",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1263,6 +1335,7 @@
 							"path": [
 								"api",
 								"category",
+								"delete",
 								"61e8f7133d1846cf34a19529"
 							]
 						}

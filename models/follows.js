@@ -152,36 +152,51 @@ module.exports = {
     },
 
     // [POST] Add (Used by userFollow)
-    AddFollows: function (following_id_user, follower_id_user, res) {
-        if (!ObjectId.isValid(following_id_user) || !ObjectId.isValid(follower_id_user))
+    AddFollows: function (following, follower, res) {
+        if (!following || !follower)
             return res.status(400).send({ code: 400, message: `Bad Request` });
         try {
-            let objIdFollowing = ObjectId(following_id_user);
-            let objIdFollower = ObjectId(follower_id_user);
             _conn.dbContext((error, db) => {
                 if (error) throw error;
                 const follows = db.collection(collectionName);
-                const doc = {
-                    following_id_user: objIdFollowing,
-                    follower_id_user: objIdFollower
-                };
-                follows.findOne(doc, (err, check) => {
+                const users = db.collection("users");
+                users.findOne({username: following}, (err, user1) => {
                     if (err) throw err;
-                    if (check != null) {
-                        return res.status(205).send({ code: 205, message: "Already followed" });
+                    if (user1 == null) {
+                        return res.status(404).send({ code: 404, message: "User 1 not found" });
                     }
                     else {
-                        follows.insertOne(doc).then(() => {
-                            const users = db.collection("users");
-                            users.updateOne({_id: objIdFollowing}, {$inc: {followers: 1}}, (err) => {
-                                if (err) throw err;
-                                users.updateOne({_id: objIdFollower}, {$inc: {followings: 1}}, (err) => {
+                        users.findOne({username: follower}, (err, user2) => {
+                            if (err) throw err;
+                            if (user2 == null) {
+                                return res.status(404).send({ code: 404, message: "User 2 not found" });
+                            }
+                            else {
+                                const doc = {
+                                    following_id_user: user1._id,
+                                    follower_id_user: user2._id
+                                };
+                                follows.findOne(doc, (err, check) => {
                                     if (err) throw err;
-                                    return res.status(200).send({ code: 200, message: "User followed" });
+                                    if (check != null) {
+                                        return res.status(205).send({ code: 205, message: "Already followed" });
+                                    }
+                                    else {
+                                        follows.insertOne(doc).then(() => {
+                                            const users = db.collection("users");
+                                            users.updateOne({_id: user1._id}, {$inc: {followers: 1}}, (err) => {
+                                                if (err) throw err;
+                                                users.updateOne({_id: user2._id}, {$inc: {followings: 1}}, (err) => {
+                                                    if (err) throw err;
+                                                    return res.status(200).send({ code: 200, message: "User followed" });
+                                                });
+                                            });
+                                        })
+                                        .catch(error => { throw error });
+                                    }
                                 });
-                            });
-                        })
-                        .catch(error => { throw error });
+                            }
+                        });
                     }
                 });
             });
@@ -191,32 +206,47 @@ module.exports = {
     },
 
     // [DELETE] Delete Permanently (Used by userUnfollow)
-    DeleteFollows: function (following_id_user, follower_id_user, res) {
-        if (!ObjectId.isValid(following_id_user) || !ObjectId.isValid(follower_id_user))
+    DeleteFollows: function (following, follower, res) {
+        if (!following || !follower)
             return res.status(400).send({ code: 400, message: `Bad Request` });
         try {
-            let objIdFollowing = ObjectId(following_id_user);
-            let objIdFollower = ObjectId(follower_id_user);
             _conn.dbContext((error, db) => {
                 if (error) throw error;
                 const follows = db.collection(collectionName);
-                follows.deleteOne({
-                    following_id_user: objIdFollowing,
-                    follower_id_user: objIdFollower
-                },
-                (error, result) => {
-                    if (error) throw error;
-                    if (result.deletedCount == 0) {
-                        return res.status(205).send({ code: 205, message: `Already unfollowed` });
+                const users = db.collection("users");
+                users.findOne({username: following}, (err, user1) => {
+                    if (err) throw err;
+                    if (user1 == null) {
+                        return res.status(404).send({ code: 404, message: "User 1 not found" });
                     }
                     else {
-                        const users = db.collection("users");
-                        users.updateOne({_id: objIdFollowing}, {$inc: {followers: -1}}, (err) => {
+                        users.findOne({username: follower}, (err, user2) => {
                             if (err) throw err;
-                            users.updateOne({_id: objIdFollower}, {$inc: {followings: -1}}, (err) => {
-                                if (err) throw err;
-                                return res.status(200).send({ code: 200, message: `User unfollowed` });
-                            });
+                            if (user2 == null) {
+                                return res.status(404).send({ code: 404, message: "User 2 not found" });
+                            }
+                            else {
+                                follows.deleteOne({
+                                    following_id_user: user1._id,
+                                    follower_id_user: user2._id
+                                },
+                                (error, result) => {
+                                    if (error) throw error;
+                                    if (result.deletedCount == 0) {
+                                        return res.status(205).send({ code: 205, message: `Already unfollowed` });
+                                    }
+                                    else {
+                                        const users = db.collection("users");
+                                        users.updateOne({_id: user1._id}, {$inc: {followers: -1}}, (err) => {
+                                            if (err) throw err;
+                                            users.updateOne({_id: user2._id}, {$inc: {followings: -1}}, (err) => {
+                                                if (err) throw err;
+                                                return res.status(200).send({ code: 200, message: `User unfollowed` });
+                                            });
+                                        });
+                                    }
+                                });
+                            }
                         });
                     }
                 });
